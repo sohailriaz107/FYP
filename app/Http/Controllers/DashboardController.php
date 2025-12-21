@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Amenities;
 use App\Models\RoomsTypes;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class DashboardController extends Controller
         return view('admin.dashboard');
     }
     public function Rooms(){
+      
         $room_types=RoomsTypes::all();
         return view('admin.rooms',compact('room_types'));
     }

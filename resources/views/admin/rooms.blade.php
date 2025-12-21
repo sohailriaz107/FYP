@@ -11,7 +11,7 @@
     </div>
     <div class="add_button" style="text-align: end;">
         <button class="btn btn-success" data-bs-toggle="modal"
-            data-bs-target="#addRoomModal">Add Room</button>
+            data-bs-target="#addRoomModal">Add Room Category</button>
     </div>
 
     <div style="margin: 25px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: auto; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); border-radius: 8px;">
@@ -26,7 +26,7 @@
                     <th style="padding: 15px 20px;">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="roomsTable">
                 @foreach ($room_types as $room)
 
 
@@ -50,79 +50,76 @@
                         </a>
                         <a href="#" class="btn btn-danger deleteRoomBtn" data-id="{{$room->id}}">Delete</a>
 
-                    </td>
-                    <!-- edit modal -->
-                    <div class="modal fade" id="EditRoom{{$room->id}}" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content"
-                                style="border-radius:18px; border:0; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                        <!-- edit modal -->
+                        <div class="modal fade" id="EditRoom{{$room->id}}" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content"
+                                    style="border-radius:18px; border:0; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
 
-                                <!-- Header -->
-                                <div class="modal-header text-white"
-                                    style="background-color:darkgray; 
-                                   border-top-left-radius:18px; border-top-right-radius:18px;">
-                                    <h5 class="modal-title fw-bold" id="addRoomModalLabel">🛏️ Add New Room Type</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                </div>
+                                    <!-- Header -->
+                                    <div class="modal-header text-white"
+                                        style="background-color:darkgray; 
+                                       border-top-left-radius:18px; border-top-right-radius:18px;">
+                                        <h5 class="modal-title fw-bold" id="addRoomModalLabel">🛏️ Edit Room Type</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
 
-                                <!-- Body -->
-                                <div class="modal-body p-4" style="background:#f8f9fc;">
-                                    <form id="editRoomForm{{$room->id}}" class="editRoomForm" action="{{ route('rooms.update', $room->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <!-- Room Name -->
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Room Name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control"
-                                                style="border-radius:10px;"
-                                                id="editName{{$room->id}}" name="roomName"
-                                                placeholder="Enter the room type" maxlength="100" value="{{$room->name}}">
-                                        </div>
-
-
-
-                                        <!-- Base Price -->
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Base Price (Per Night) <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <span class="input-group-text" style="border-radius:10px 0 0 10px;">$</span>
-                                                <input type="number" class="form-control"
-                                                    style="border-radius:0 10px 10px 0;"
-                                                    id="editPrice{{$room->id}}" name="basePrice" value="{{$room->base_price}}"
-                                                    placeholder="120.00" step="0.01" min="0.01">
+                                    <!-- Body -->
+                                    <div class="modal-body p-4" style="background:#f8f9fc;">
+                                        <form id="editRoomForm{{$room->id}}" class="editRoomForm" action="{{ route('rooms.update', $room->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <!-- Room Name -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Room Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control"
+                                                    style="border-radius:10px;"
+                                                    id="editName{{$room->id}}" name="roomName"
+                                                    placeholder="Enter the room type" maxlength="100" value="{{$room->name}}">
                                             </div>
-                                            <small class="text-muted">Enter the minimum price before taxes and promotions.</small>
-                                        </div>
+                                            <!-- Base Price -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Base Price (Per Night) <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text" style="border-radius:10px 0 0 10px;">$</span>
+                                                    <input type="number" class="form-control"
+                                                        style="border-radius:0 10px 10px 0;"
+                                                        id="editPrice{{$room->id}}" name="basePrice" value="{{$room->base_price}}"
+                                                        placeholder="120.00" step="0.01" min="0.01">
+                                                </div>
+                                                <small class="text-muted">Enter the minimum price before taxes and promotions.</small>
+                                            </div>
 
-                                        <!-- Description -->
-                                        <div class="mb-0">
-                                            <label class="form-label fw-semibold">Description</label>
-                                            <textarea class="form-control"
-                                                style="border-radius:10px;"
-                                                id="editDescription{{$room->id}}" name="description"
-                                                rows="3"
-                                                placeholder="A brief summary of the room's features and amenities..."
-                                                maxlength="500">{{$room->description}}</textarea>
-                                            <small class="text-muted">Highlight key features (e.g., 'Ocean view', 'King bed').</small>
-                                        </div>
-                                    </form>
-                                </div>
+                                            <!-- Description -->
+                                            <div class="mb-0">
+                                                <label class="form-label fw-semibold">Description</label>
+                                                <textarea class="form-control"
+                                                    style="border-radius:10px;"
+                                                    id="editDescription{{$room->id}}" name="description"
+                                                    rows="3"
+                                                    placeholder="A brief summary of the room's features and amenities..."
+                                                    maxlength="500">{{$room->description}}</textarea>
+                                                <small class="text-muted">Highlight key features (e.g., 'Ocean view', 'King bed').</small>
+                                            </div>
+                                        </form>
+                                    </div>
 
-                                <!-- Footer -->
-                                <div class="modal-footer" style="background:#f1f3f6; border-bottom-left-radius:18px; border-bottom-right-radius:18px;">
-                                    <button type="button" class="btn btn-light px-4"
-                                        style="border-radius:10px; border:1px solid #d0d0d0;"
-                                        data-bs-dismiss="modal">Cancel</button>
+                                    <!-- Footer -->
+                                    <div class="modal-footer" style="background:#f1f3f6; border-bottom-left-radius:18px; border-bottom-right-radius:18px;">
+                                        <button type="button" class="btn btn-light px-4"
+                                            style="border-radius:10px; border:1px solid #d0d0d0;"
+                                            data-bs-dismiss="modal">Cancel</button>
 
-                                    <button type="submit" form="editRoomForm{{$room->id}}"
-                                        class="btn btn-success px-4" style="border-radius:10px;">
-                                        Update Room
-                                    </button>
+                                        <button type="submit" form="editRoomForm{{$room->id}}"
+                                            class="btn btn-success px-4" style="border-radius:10px;">
+                                            Update Room
+                                        </button>
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </td>
 
                 </tr>
                 @endforeach
@@ -215,15 +212,55 @@
                 },
 
                 success: function(response) {
-
                     let room = response.room;
+                    let editRoute = "{{ route('rooms.update', ':id') }}".replace(':id', room.id);
 
                     let row = `
-                    <tr>
-                        <td>${room.id}</td>
-                        <td>${room.name}</td>
-                        <td>$${room.base_price}</td>
-                        <td>${room.description ?? ''}</td>
+                    <tr id="roomRow${room.id}" style="border-bottom: 1px solid #dddddd;">
+                        <td style="padding: 15px 20px;">#</td>
+                        <td style="padding: 15px 20px;">${room.name}</td>
+                        <td style="padding: 15px 20px;">${room.description ? room.description : ''}</td>
+                        <td style="padding: 15px 20px;">
+                            <span style="padding: 5px 10px;">${room.base_price}</span>
+                        </td>
+                        <td style="padding: 15px 20px;">
+                            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditRoom${room.id}">Edit</a>
+                            <a href="#" class="btn btn-danger deleteRoomBtn" data-id="${room.id}">Delete</a>
+
+                            <!-- edit modal -->
+                            <div class="modal fade" id="EditRoom${room.id}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content" style="border-radius:18px;">
+                                        <div class="modal-header text-white" style="background-color:darkgray;">
+                                            <h5 class="modal-title fw-bold">🛏️ Edit Room Type</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <form id="editRoomForm${room.id}" class="editRoomForm" action="${editRoute}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Room Name</label>
+                                                    <input type="text" class="form-control" name="roomName" value="${room.name}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Base Price</label>
+                                                    <input type="number" class="form-control" name="basePrice" value="${room.base_price}" step="0.01" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Description</label>
+                                                    <textarea class="form-control" name="description" rows="3">${room.description || ''}</textarea>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" form="editRoomForm${room.id}" class="btn btn-success">Update Room</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 `;
 
