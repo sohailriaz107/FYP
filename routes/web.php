@@ -18,7 +18,7 @@ Route::post('login',[AuthController::class,'login'])->name('login.submit');
 Route::middleware('authcheck')->group(function () {
 Route::get('/',[HotalController::class,'index'])->name('home');
 Route::get('/room',[HotalController::class,'room'])->name('room');
-Route::get('/room/1',[HotalController::class,'RoomSingle'])->name('room-single');
+Route::get('/room/{id}',[HotalController::class,'RoomSingle'])->name('room-single');
 Route::get('/resturent',[HotalController::class,'Resturent'])->name('resturent');
 Route::get('/about',[HotalController::class,'About'])->name('about');
 Route::get('/contact',[HotalController::class,'Contact'])->name('contact');

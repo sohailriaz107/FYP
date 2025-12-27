@@ -22,7 +22,9 @@
                     <th style="padding: 15px 20px;">Room Name</th>
                     <th style="padding: 15px 20px;">Description</th>
                     <th style="padding: 15px 20px;">Base Price</th>
-
+                    <th style="padding: 15px 20px;">Beds</th>
+                    <th style="padding: 15px 20px;">Room Size</th>
+                    <th style="padding: 15px 20px;">Max Persons</th>
                     <th style="padding: 15px 20px;">Action</th>
                 </tr>
             </thead>
@@ -37,6 +39,9 @@
                     <td style="padding: 15px 20px;">
                         <span style="padding: 5px 10px;">{{$room->base_price}}</span>
                     </td>
+                    <td style="padding: 15px 20px;">{{$room->beds}}</td>
+                    <td style="padding: 15px 20px;">{{$room->room_size}}</td>
+                    <td style="padding: 15px 20px;">{{$room->max_persons}}</td>
 
                     <td style="padding: 15px 20px;">
                         <a href="#" class="btn btn-primary editRoomBtn"
@@ -90,6 +95,35 @@
                                                 <small class="text-muted">Enter the minimum price before taxes and promotions.</small>
                                             </div>
 
+                                            <!-- Room Size -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Room Size <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control"
+                                                    style="border-radius:10px;"
+                                                    name="room_size"
+                                                    placeholder="Enter room size" value="{{$room->room_size}}">
+                                            </div>
+
+                                            <!-- Beds -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Beds <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control"
+                                                    style="border-radius:10px;"
+                                                    name="beds"
+                                                    placeholder="Number of beds" value="{{$room->beds}}">
+                                            </div>
+
+                                            <!-- Max Persons -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Max Persons <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control"
+                                                    style="border-radius:10px;"
+                                                    name="max_person"
+                                                    placeholder="Max persons" value="{{$room->max_persons}}">
+                                            </div>
+
+
+
                                             <!-- Description -->
                                             <div class="mb-0">
                                                 <label class="form-label fw-semibold">Description</label>
@@ -129,60 +163,86 @@
     </div>
 
     <!-- pop-up for adding rooms -->
-  <div class="modal fade" id="addRoomModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal fade" id="addRoomModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Room</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Room</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-            <div class="modal-body">
-                <form id="addRoomForm" action="{{ route('rooms.store') }}" method="POST">
-                    @csrf
+                <div class="modal-body">
+                    <form id="addRoomForm" action="{{ route('rooms.store') }}" method="POST">
+                        @csrf
 
-                    <!-- Room Name -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Room Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" 
-                               id="roomName" name="roomName" 
-                               placeholder="Enter the room name" maxlength="100" required>
-                        <small class="text-muted">A unique, descriptive name for the room.</small>
-                    </div>
-
-                    <!-- Base Price -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Base Price (Per Night) <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" class="form-control" 
-                                   id="basePrice" name="basePrice" 
-                                   placeholder="120.00" step="0.01" min="0.01" required>
+                        <!-- Room Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Room Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control"
+                                id="roomName" name="roomName"
+                                placeholder="Enter the room name" maxlength="100" required>
+                            
                         </div>
-                        <small class="text-muted">Enter the minimum price before taxes and promotions.</small>
-                    </div>
 
-                    <!-- Description -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Description</label>
-                        <textarea class="form-control" 
-                                  id="description" name="description" 
-                                  rows="3" placeholder="A brief summary of the room's features..." maxlength="500"></textarea>
-                        <small class="text-muted">Highlight key features (e.g., 'Ocean view', 'King bed').</small>
-                    </div>
+                        <!-- room size -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Room Size <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control"
+                                id="addRoomSize" name="room_size"
+                                placeholder="Enter the room size in feet" maxlength="100" required>
 
-                    <!-- Footer Buttons -->
-                    <div class="modal-footer" style="background:#f1f3f6; border-bottom-left-radius:18px; border-bottom-right-radius:18px;">
-                        <button type="button" class="btn btn-light px-4" style="border-radius:10px; border:1px solid #d0d0d0;" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success px-4" style="border-radius:10px;">Save Room</button>
-                    </div>
+                        </div>
+                        <!-- beds -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold"> Max Beds <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control"
+                                id="beds" name="beds"
+                                maxlength="100" required>
 
-                </form>
+                        </div>
+
+                        <!-- max_person -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Max Person <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control"
+                                id="maxPerson" name="max_person"
+                                maxlength="100" required>
+
+                        </div>
+
+                        <!-- Base Price -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Base Price (Per Night) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control"
+                                    id="basePrice" name="basePrice"
+                                    placeholder="120.00" step="0.01" min="0.01" required>
+                            </div>
+                            <small class="text-muted">Enter the minimum price before taxes and promotions.</small>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Description</label>
+                            <textarea class="form-control"
+                                id="description" name="description"
+                                rows="3" placeholder="A brief summary of the room's features..." maxlength="500"></textarea>
+                            <small class="text-muted">Highlight key features (e.g., 'Ocean view', 'King bed').</small>
+                        </div>
+
+                        <!-- Footer Buttons -->
+                        <div class="modal-footer" style="background:#f1f3f6; border-bottom-left-radius:18px; border-bottom-right-radius:18px;">
+                            <button type="button" class="btn btn-light px-4" style="border-radius:10px; border:1px solid #d0d0d0;" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success px-4" style="border-radius:10px;">Save Room</button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <!-- pop-up for edit the rooms -->
 
@@ -223,6 +283,9 @@
                         <td style="padding: 15px 20px;">
                             <span style="padding: 5px 10px;">${room.base_price}</span>
                         </td>
+                        <td style="padding: 15px 20px;">${room.beds}</td>
+                        <td style="padding: 15px 20px;">${room.room_size}</td>
+                        <td style="padding: 15px 20px;">${room.max_persons}</td>
                         <td style="padding: 15px 20px;">
                             <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditRoom${room.id}">Edit</a>
                             <a href="#" class="btn btn-danger deleteRoomBtn" data-id="${room.id}">Delete</a>
@@ -276,7 +339,7 @@
                     $('#addRoomForm')[0].reset();
                     $('#addRoomModal').modal('hide');
                 },
-             
+
 
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -327,6 +390,9 @@
                 $("#roomRow" + roomId + " td:nth-child(2)").text(response.name);
                 $("#roomRow" + roomId + " td:nth-child(3)").text(response.description);
                 $("#roomRow" + roomId + " td:nth-child(4) span").text(response.base_price);
+                $("#roomRow" + roomId + " td:nth-child(5)").text(response.beds);
+                $("#roomRow" + roomId + " td:nth-child(6)").text(response.room_size);
+                $("#roomRow" + roomId + " td:nth-child(7)").text(response.max_persons);
 
                 // CLOSE MODAL
                 $("#EditRoom" + roomId).modal('hide');

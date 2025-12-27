@@ -21,6 +21,7 @@
                     <th style="padding: 15px 20px;">SR</th>
                     <th style="padding: 15px 20px;">Room Type</th>
                     <th style="padding: 15px 20px;">Room No</th>
+                    <th style="padding: 15px 20px;">Images</th>
                     <th style="padding: 15px 20px;">Amenities</th>
                     <th style="padding: 15px 20px;">Status</th>
                     <th style="padding: 15px 20px;">Action</th>
@@ -32,6 +33,11 @@
                     <td style="padding: 15px 20px;">{{ $loop->index + 1 }}</td>
                     <td style="padding: 15px 20px;">{{ $room->roomType->name ?? 'N/A' }}</td>
                     <td style="padding: 15px 20px;">{{ $room->room_number }}</td>
+                    <td style="padding: 15px 20px;" class="images-cell">
+                        @foreach($room->images as $image)
+                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Room Image" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px; margin-right: 2px;">
+                        @endforeach
+                    </td>
                     <td style="padding: 15px 20px;" class="amenities-cell">
                         @foreach($room->amenities as $amenity)
                             <img src="{{ asset('storage/' . $amenity->icon) }}" alt="{{ $amenity->name }}" title="{{ $amenity->name }}" style="width: 25px; height: 25px; object-fit: cover; border-radius: 4px; margin-right: 2px;">
@@ -97,6 +103,22 @@
                                                     </div>
                                                     @endforeach
                                                 </div>
+                                            </div>
+                                            <!-- images -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Existing Images</label>
+                                                <div class="d-flex flex-wrap">
+                                                    @foreach($room->images as $image)
+                                                        <div class="me-2 mb-2 position-relative">
+                                                            <img src="{{ asset('storage/' . $image->image_path) }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">Room Images (Add More)</label>
+                                                <input type="file" name="images[]" class="form-control" multiple>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -177,6 +199,10 @@
                             </select>
 
 
+                        <!-- images -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Room Images</label>
+                            <input type="file" name="images[]" class="form-control" multiple>
                         </div>
 
                         <!-- Footer Buttons -->
@@ -232,11 +258,19 @@
                         });
                     }
 
+                    let imagesHtml = '';
+                    if (room.images && room.images.length > 0) {
+                        room.images.forEach(image => {
+                            imagesHtml += `<img src="{{ asset('storage') }}/${image.image_path}" alt="Room Image" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px; margin-right: 2px;">`;
+                        });
+                    }
+
                     let row = `
                     <tr id="roomRow${room.id}" style="border-bottom: 1px solid #dddddd;">
                         <td style="padding: 15px 20px;">#</td>
                         <td style="padding: 15px 20px;">${typeName}</td>
                         <td style="padding: 15px 20px;">${room.room_number}</td>
+                        <td style="padding: 15px 20px;" class="images-cell">${imagesHtml}</td>
                         <td style="padding: 15px 20px;" class="amenities-cell">${amenitiesHtml}</td>
                         <td style="padding: 15px 20px;">
                             <span style="padding: 5px 10px; border-radius: 4px; background-color: ${statusColor}; color: ${statusTextColor};">
@@ -301,12 +335,14 @@
         let form = $(this);
         let roomId = form.attr("id").replace("editRoomForm", "");
         let url = form.attr("action");
-        let formData = form.serialize();
+        let formData = new FormData(this);
 
         $.ajax({
             url: url,
             method: "POST", // Method spoofing will handle PUT
             data: formData,
+            processData: false,
+            contentType: false,
             success: function(response) {
                 let room = response.room;
                 let typeName = room.room_type ? room.room_type.name : 'N/A';
@@ -321,11 +357,19 @@
                     });
                 }
 
+                let imagesHtml = '';
+                if (room.images && room.images.length > 0) {
+                    room.images.forEach(image => {
+                        imagesHtml += `<img src="{{ asset('storage') }}/${image.image_path}" alt="Room Image" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px; margin-right: 2px;">`;
+                    });
+                }
+
                 // UPDATE TABLE ROW WITHOUT RELOAD
                 $("#roomRow" + roomId + " td:nth-child(2)").text(typeName);
                 $("#roomRow" + roomId + " td:nth-child(3)").text(room.room_number);
+                $("#roomRow" + roomId + " .images-cell").html(imagesHtml);
                 $("#roomRow" + roomId + " .amenities-cell").html(amenitiesHtml);
-                $("#roomRow" + roomId + " td:nth-child(5) span").text(statusText).css({
+                $("#roomRow" + roomId + " td:nth-child(6) span").text(statusText).css({
                     'background-color': statusColor,
                     'color': statusTextColor
                 });
