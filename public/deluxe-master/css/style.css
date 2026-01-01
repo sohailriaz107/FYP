@@ -7950,9 +7950,9 @@ h1, h2, h3, h4, h5,
       .room .text ul.list li {
         list-style: none;
         color: #000000;
-        font-size: 14px; }
+        font-size: 16px; }
         .room .text ul.list li span {
-          color: #8d703b; }
+          color: black; }
 
 .room-img {
   height: 400px;

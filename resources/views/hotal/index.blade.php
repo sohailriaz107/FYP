@@ -35,14 +35,16 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">
-				<form action="#" class="booking-form">
+				<form action="{{ route('check.availability') }}" method="POST" class="booking-form" id="availability-form">
+					@csrf
 					<div class="row">
+						<!-- added filter here -->
 						<div class="col-md-3 d-flex">
 							<div class="form-group p-4 align-self-stretch d-flex align-items-end">
 								<div class="wrap">
 									<label for="#">Check-in Date</label>
-									<input type="text" class="form-control checkin_date"
-										placeholder="Check-in date">
+									<input type="text" name="check_in" class="form-control checkin_date"
+										placeholder="Check-in date" id="check_in" required>
 								</div>
 							</div>
 						</div>
@@ -50,8 +52,8 @@
 							<div class="form-group p-4 align-self-stretch d-flex align-items-end">
 								<div class="wrap">
 									<label for="#">Check-out Date</label>
-									<input type="text" class="form-control checkout_date"
-										placeholder="Check-out date">
+									<input type="text" name="check_out" class="form-control checkout_date"
+										placeholder="Check-out date" id="check_out" required>
 								</div>
 							</div>
 						</div>
@@ -62,13 +64,13 @@
 									<div class="form-field">
 										<div class="select-wrap">
 											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">Suite</option>
-												<option value="">Family Room</option>
-												<option value="">Deluxe Room</option>
-												<option value="">Classic Room</option>
-												<option value="">Superior Room</option>
-												<option value="">Luxury Room</option>
+											<select name="room_type" id="room_type" class="form-control" required>
+												<option value="">Select Room Type</option>
+												@foreach ($room_type as $room)
+												<option value="{{ $room->id }}">
+													{{ $room->name }}
+												</option>
+												@endforeach
 											</select>
 										</div>
 									</div>
@@ -82,13 +84,13 @@
 									<div class="form-field">
 										<div class="select-wrap">
 											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">1 Adult</option>
-												<option value="">2 Adult</option>
-												<option value="">3 Adult</option>
-												<option value="">4 Adult</option>
-												<option value="">5 Adult</option>
-												<option value="">6 Adult</option>
+											<select name="customers" id="customers" class="form-control">
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3">3</option>
+												<option value="4">4</option>
+												<option value="5">5</option>
+												<option value="6">6</option>
 											</select>
 										</div>
 									</div>
@@ -215,108 +217,15 @@
 				<h2 class="mb-4">Our Rooms</h2>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm col-md-6 col-lg-4 ftco-animate">
-				<div class="room">
-					<a href="rooms.html" class="img d-flex justify-content-center align-items-center"
-						style="background-image: url('{{ asset('assets/images/room-1.jpg') }}');" ">
-							<div class=" icon d-flex justify-content-center align-items-center">
-						<span class="icon-search2"></span>
-				</div>
-				</a>
-				<div class="text p-3 text-center">
-					<h3 class="mb-3"><a href="rooms.html">Suite Room</a></h3>
-					<p><span class="price mr-2">$120.00</span> <span class="per">per night</span></p>
-					<hr>
-					<p class="pt-1"><a href="room-single.html" class="btn-custom">View Room Details <span
-								class="icon-long-arrow-right"></span></a></p>
-				</div>
-			</div>
+		<div class="row" id="available-rooms-list">
+			@foreach ($rooms as $room )
+                @include('hotal.partials.room_card', ['room' => $room])
+			@endforeach
 		</div>
-		<div class="col-sm col-md-6 col-lg-4 ftco-animate">
-			<div class="room">
-				<a href="rooms.html" class="img d-flex justify-content-center align-items-center"
-					style="background-image: url('{{ asset('assets/images/room-2.jpg') }}');" ">
-							<div class=" icon d-flex justify-content-center align-items-center">
-					<span class="icon-search2"></span>
-			</div>
-			</a>
-			<div class="text p-3 text-center">
-				<h3 class="mb-3"><a href="rooms.html">Family Room</a></h3>
-				<p><span class="price mr-2">$20.00</span> <span class="per">per night</span></p>
-				<hr>
-				<p class="pt-1"><a href="room-single.html" class="btn-custom">View Room Details <span
-							class="icon-long-arrow-right"></span></a></p>
-			</div>
-		</div>
+
 	</div>
-	<div class="col-sm col-md-6 col-lg-4 ftco-animate">
-		<div class="room">
-			<a href="rooms.html" class="img d-flex justify-content-center align-items-center"
-				style="background-image: url('{{ asset('assets/images/room-3.jpg') }}');" ">
-							<div class=" icon d-flex justify-content-center align-items-center">
-				<span class="icon-search2"></span>
-		</div>
-		</a>
-		<div class="text p-3 text-center">
-			<h3 class="mb-3"><a href="rooms.html">Deluxe Room</a></h3>
-			<p><span class="price mr-2">$150.00</span> <span class="per">per night</span></p>
-			<hr>
-			<p class="pt-1"><a href="room-single.html" class="btn-custom">View Room Details <span
-						class="icon-long-arrow-right"></span></a></p>
-		</div>
-	</div>
-	</div>
-	<div class="col-sm col-md-6 col-lg-4 ftco-animate">
-		<div class="room">
-			<a href="rooms.html" class="img d-flex justify-content-center align-items-center"
-				style="background-image: url('{{ asset('assets/images/room-4.jpg') }}');" ">
-							<div class=" icon d-flex justify-content-center align-items-center">
-				<span class="icon-search2"></span>
-		</div>
-		</a>
-		<div class="text p-3 text-center">
-			<h3 class="mb-3"><a href="rooms.html">Classic Room</a></h3>
-			<p><span class="price mr-2">$130.00</span> <span class="per">per night</span></p>
-			<hr>
-			<p class="pt-1"><a href="room-single.html" class="btn-custom">View Room Details <span
-						class="icon-long-arrow-right"></span></a></p>
-		</div>
-	</div>
-	</div>
-	<div class="col-sm col-md-6 col-lg-4 ftco-animate">
-		<div class="room">
-			<a href="rooms.html" class="img d-flex justify-content-center align-items-center"
-				style="background-image: url('{{ asset('assets/images/room-5.jpg') }}');" ">
-							<div class=" icon d-flex justify-content-center align-items-center">
-				<span class="icon-search2"></span>
-		</div>
-		</a>
-		<div class="text p-3 text-center">
-			<h3 class="mb-3"><a href="rooms.html">Superior Room</a></h3>
-			<p><span class="price mr-2">$300.00</span> <span class="per">per night</span></p>
-			<hr>
-			<p class="pt-1"><a href="room-single.html" class="btn-custom">View Room Details <span
-						class="icon-long-arrow-right"></span></a></p>
-		</div>
-	</div>
-	</div>
-	<div class="col-sm col-md-6 col-lg-4 ftco-animate">
-		<div class="room">
-			<a href="rooms.html" class="img d-flex justify-content-center align-items-center"
-				style="background-image: url('{{ asset('assets/images/room-6.jpg') }}');" ">
-							<div class=" icon d-flex justify-content-center align-items-center">
-				<span class="icon-search2"></span>
-		</div>
-		</a>
-		<div class="text p-3 text-center">
-			<h3 class="mb-3"><a href="rooms.html">Luxury Room</a></h3>
-			<p><span class="price mr-2">$500.00</span> <span class="per">per night</span></p>
-			<hr>
-			<p class="pt-1"><a href="room-single.html" class="btn-custom">View Room Details <span
-						class="icon-long-arrow-right"></span></a></p>
-		</div>
-	</div>
+
+
 	</div>
 	</div>
 	</div>
@@ -421,4 +330,60 @@
 
 
 
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    $('#availability-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        var formData = $(this).serialize();
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message + ' (' + response.available_count + ' rooms found)',
+                        icon: 'success',
+                        confirmButtonText: 'Great!'
+                    });
+                    
+                    // Dynamic update of rooms list
+                    $('#available-rooms-list').html(response.html);
+                    
+                    // Scroll to rooms section
+                    $('html, body').animate({
+                        scrollTop: $("#available-rooms-list").offset().top - 100
+                    }, 800);
+                } else {
+                    Swal.fire({
+                        title: 'Not Available',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function(xhr) {
+                var message = 'Something went wrong. Please try again.';
+                if (xhr.status === 422) {
+                    var errors = xhr.responseJSON.errors;
+                    message = Object.values(errors).flat().join('\n');
+                }
+                Swal.fire({
+                    title: 'Error',
+                    text: message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+});
+</script>
+@endsection
 @endsection

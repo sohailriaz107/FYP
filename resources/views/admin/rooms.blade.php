@@ -43,8 +43,8 @@
                     <td style="padding: 15px 20px;">{{$room->room_size}}</td>
                     <td style="padding: 15px 20px;">{{$room->max_persons}}</td>
 
-                    <td style="padding: 15px 20px;">
-                        <a href="#" class="btn btn-primary editRoomBtn"
+                    <td style="padding: 15px 20px; ">
+                        <a href="#" class="btn btn-primary editRoomBtn" style="margin-bottom:10px;"
                             data-id="{{$room->id}}"
                             data-name="{{$room->name}}"
                             data-price="{{$room->base_price}}"

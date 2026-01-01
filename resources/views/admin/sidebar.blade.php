@@ -1,5 +1,6 @@
 <aside class="sidebar shadow-lg" id="sidebar">
-    <a href="#" class="brand text-white text-decoration-none">
+
+    <a href="{{ route('dashboard') }}" class="brand text-white text-decoration-none">
         <i class="bi bi-building"></i>
         <span class="fw-bold fs-5 ms-2">Room PMS</span>
     </a>
@@ -8,75 +9,87 @@
 
         <!-- Dashboard -->
         <li class="nav-item">
-            <a class="nav-link active" href="{{ route('dashboard') }}">
+            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                href="{{ route('dashboard') }}">
                 <i class="bi bi-speedometer2 me-2"></i> Dashboard
             </a>
         </li>
 
         <!-- Rooms Management -->
         <li class="nav-item">
-            <a class="nav-link d-flex justify-content-between align-items-center"
+
+            <a class="nav-link d-flex justify-content-between align-items-center
+                {{ request()->routeIs('rooms*') ? '' : 'collapsed' }}"
                 data-bs-toggle="collapse"
                 href="#roomsMenu"
-                role="button"
-                aria-expanded="false"
-                aria-controls="roomsMenu">
+                aria-expanded="{{ request()->routeIs('rooms*') ? 'true' : 'false' }}">
 
                 <span>
                     <i class="bi bi-door-open-fill me-2"></i> Rooms Management
                 </span>
-
                 <i class="bi bi-chevron-down"></i>
             </a>
 
-            <!-- Collapse Menu -->
-            <div class="collapse ps-4" id="roomsMenu">
+            <div class="collapse ps-4 {{ request()->routeIs('rooms*') ? 'show' : '' }}"
+                id="roomsMenu">
+
                 <ul class="nav flex-column mt-2">
+
+                    <!-- Category -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('rooms') }}">
+                        <a class="nav-link {{ request()->routeIs('rooms') ? 'active' : '' }}"
+                            href="{{ route('rooms') }}">
                             <i class="bi bi-list-ul me-2"></i> Category
                         </a>
                     </li>
 
+                    <!-- Rooms List -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('rooms.list')}}">
+                        <a class="nav-link {{ request()->routeIs('rooms.list') ? 'active' : '' }}"
+                            href="{{ route('rooms.list') }}">
                             <i class="bi bi-door-closed me-2"></i> Rooms List
                         </a>
                     </li>
+
                 </ul>
             </div>
         </li>
-        <!-- amenties -->
+
+        <!-- Amenities -->
         <li class="nav-item">
-            <a class="nav-link" href="{{route('amenties.index')}}">
+            <a class="nav-link {{ request()->routeIs('amenties.*') ? 'active' : '' }}"
+                href="{{ route('amenties.index') }}">
                 <i class="bi bi-calendar-check me-2"></i> Amenities
             </a>
         </li>
+
         <!-- Bookings -->
         <li class="nav-item">
-            <a class="nav-link" href="#bookings">
+            <a class="nav-link {{ request()->routeIs('Booking.*') ? 'active' : '' }}"
+                href="{{ route('Booking.index') }}">
                 <i class="bi bi-calendar-check me-2"></i> Bookings
             </a>
         </li>
 
-        <!-- Guests -->
+        <!-- Guest -->
         <li class="nav-item">
-            <a class="nav-link" href="#guests">
-                <i class="bi bi-people-fill me-2"></i> Guests
+            <a class="nav-link"
+                href="#">
+                <i class="bi bi-calendar-check me-2"></i> Guest
             </a>
         </li>
 
-        <!-- Reports -->
-        <li class="nav-item">
-            <a class="nav-link" href="#reports">
-                <i class="bi bi-bar-chart-fill me-2"></i> Reports
+          <li class="nav-item">
+            <a class="nav-link "
+               href="#">
+                <i class="bi bi-calendar-check me-2"></i> Report
             </a>
         </li>
 
-        <!-- Settings -->
-        <li class="nav-item">
-            <a class="nav-link" href="#settings">
-                <i class="bi bi-gear-fill me-2"></i> Settings
+          <li class="nav-item">
+            <a class="nav-link "
+               href="#">
+                <i class="bi bi-calendar-check me-2"></i> Setting
             </a>
         </li>
 
