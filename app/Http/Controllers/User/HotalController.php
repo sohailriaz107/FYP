@@ -56,7 +56,92 @@ class HotalController extends Controller
     }
     public function Profile()
     {
-        return view('hotal.profile');
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $booking = \App\Models\Booking::where('Guest', $user->name)
+            ->with(['room.roomType', 'room.images'])
+            ->latest()
+            ->first();
+            
+        return view('hotal.profile', compact('user', 'booking'));
+    }
+
+    public function CancelBooking($id)
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $booking = \App\Models\Booking::where('id', $id)
+            ->where('Guest', $user->name)
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Booking not found.'
+            ], 404);
+        }
+
+        $booking->status = 'cancelled';
+        $booking->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Booking cancelled successfully!'
+        ]);
+    }
+
+    public function UpdateProfile(Request $request)
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'current_password' => 'nullable|required_with:new_password',
+            'new_password' => 'nullable|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+        $user->address = $request->address;
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($user->image && file_exists(public_path($user->image))) {
+                @unlink(public_path($user->image));
+            }
+            
+            $imageName = time().'.'.$request->image->extension();  
+            $request->image->move(public_path('uploads/profile'), $imageName);
+            $user->image = 'uploads/profile/'.$imageName;
+        }
+
+        if ($request->filled('new_password')) {
+            if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Current password does not match.'
+                ], 400);
+            }
+            $user->password = \Illuminate\Support\Facades\Hash::make($request->new_password);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profile updated successfully!',
+            'user' => $user
+        ]);
     }
 
     public function checkAvailability(Request $request)

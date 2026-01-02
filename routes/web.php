@@ -24,6 +24,9 @@ Route::middleware('authcheck')->group(function () {
     Route::get('/about', [HotalController::class, 'About'])->name('about');
     Route::get('/contact', [HotalController::class, 'Contact'])->name('contact');
     Route::get('/profile', [HotalController::class, 'Profile'])->name('profile');
+    Route::post('/profile/update', [HotalController::class, 'UpdateProfile'])->name('profile.update');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+    Route::post('/booking/cancel/{id}', [HotalController::class, 'CancelBooking'])->name('booking.cancel');
     Route::post('/check-availability', [HotalController::class, 'checkAvailability'])->name('check.availability');
 });
 

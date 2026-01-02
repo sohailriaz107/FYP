@@ -27,7 +27,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'phone' => $request->password
+            'phone' => $request->phone
         ]);
         if ($user) {
             return redirect()->route('user.login')->with('success', 'please you can login here');
@@ -53,5 +53,12 @@ class AuthController extends Controller
         } else {
             return back()->with('error', 'Invalid email or password.');
         }
+    }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('user.login')->with('success', 'Logged out successfully!');
     }
 }

@@ -17,4 +17,9 @@ class Booking extends Model
         'total_price',
         'status',
     ];
+
+    public function room()
+    {
+        return $this->belongsTo(Rooms::class, 'RoomNo', 'room_number');
+    }
 }

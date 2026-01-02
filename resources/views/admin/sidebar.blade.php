@@ -81,14 +81,27 @@
 
           <li class="nav-item">
             <a class="nav-link "
-               href="#">
+                href="#">
+                <i class="bi bi-calendar-check me-2"></i> Testimonials
+            </a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link "
+                href="#">
+                <i class="bi bi-calendar-check me-2"></i> Message
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link "
+                href="#">
                 <i class="bi bi-calendar-check me-2"></i> Report
             </a>
         </li>
 
-          <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link "
-               href="#">
+                href="#">
                 <i class="bi bi-calendar-check me-2"></i> Setting
             </a>
         </li>
