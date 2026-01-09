@@ -11,7 +11,7 @@
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                 href="{{ route('dashboard') }}">
-                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                <i class="bi bi-grid-fill me-2"></i> Dashboard
             </a>
         </li>
 
@@ -25,7 +25,7 @@
                 aria-expanded="{{ request()->routeIs('rooms*') ? 'true' : 'false' }}">
 
                 <span>
-                    <i class="bi bi-door-open-fill me-2"></i> Rooms Management
+                    <i class="bi bi-houses-fill me-2"></i> Rooms Management
                 </span>
                 <i class="bi bi-chevron-down"></i>
             </a>
@@ -59,7 +59,7 @@
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('amenties.*') ? 'active' : '' }}"
                 href="{{ route('amenties.index') }}">
-                <i class="bi bi-calendar-check me-2"></i> Amenities
+                <i class="bi bi-grid-fill me-2"></i> Amenities
             </a>
         </li>
 
@@ -67,7 +67,7 @@
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('Booking.*') ? 'active' : '' }}"
                 href="{{ route('Booking.index') }}">
-                <i class="bi bi-calendar-check me-2"></i> Bookings
+                <i class="bi bi-journal-check me-2"></i> Bookings
             </a>
         </li>
 
@@ -86,23 +86,30 @@
             </a>
         </li>
           <li class="nav-item">
-            <a class="nav-link "
-                href="#">
-                <i class="bi bi-calendar-check me-2"></i> Message
+            <a class="nav-link {{ request()->routeIs('admin.messages.index') ? 'active' : '' }}"
+                href="{{ route('admin.messages.index') }}">
+                <i class="bi bi-chat-left-text-fill me-2"></i> Message
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link "
                 href="#">
-                <i class="bi bi-calendar-check me-2"></i> Report
+                <i class="bi bi-graph-up me-2"></i> Report
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link "
+                href="{{route('admin.logout')}}">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link "
                 href="#">
-                <i class="bi bi-calendar-check me-2"></i> Setting
+                <i class="bi bi-gear-fill me-2"></i> Setting
             </a>
         </li>
 

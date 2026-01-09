@@ -15,7 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'authcheck' => \App\Http\Middleware\AuthCheck::class,
+             'admincheck' => \App\Http\Middleware\AdminCheck::class,
         ]);
+
+       
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

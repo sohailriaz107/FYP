@@ -8,7 +8,8 @@ use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\HotalController;
 use App\Http\Controllers\User\ReviewController;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 // Authentication
 
 Route::get('register', [AuthController::class, 'Register'])->name('user.register');
@@ -30,15 +31,21 @@ Route::middleware('authcheck')->group(function () {
     Route::post('/booking/cancel/{id}', [HotalController::class, 'CancelBooking'])->name('booking.cancel');
     Route::post('/check-availability', [HotalController::class, 'checkAvailability'])->name('check.availability');
     Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
+
+    Route::post('/contact/send', [MessageController::class, 'store'])->name('contact.send');
 });
 
 
-use App\Http\Controllers\UserController;
+
+
+Route::middleware(['authcheck', 'admincheck'])->group(function () {
 
 // admin
 Route::get('admin/dashboard', [DashboardController::class, 'Dashboard'])->name('dashboard');
 // room type list
 Route::get('admin/rooms', [DashboardController::class, 'Rooms'])->name('rooms');
+Route::get('admin/messages', [MessageController::class, 'index'])->name('admin.messages.index');
+Route::delete('admin/messages/{id}', [MessageController::class, 'destroy'])->name('admin.messages.destroy');
 Route::get('admin/testimonial', [DashboardController::class, 'Testimonials'])->name('testimonials.index');
 Route::put('admin/testimonial/{id}', [DashboardController::class, 'testimonialUpdate'])->name('testimonials.update');
 Route::delete('admin/testimonial/{id}', [DashboardController::class, 'testimonialDestroy'])->name('testimonials.destroy');
@@ -72,3 +79,4 @@ Route::post('/amenities/toggle-status', [AmenitiesController::class, 'toggleStat
     Route::post('/booking/post', [BookingController::class, 'post'])->name('Booking.post');
     Route::put('/booking/status/{id}', [BookingController::class, 'UpdateStatus'])->name('Booking.status');
     Route::delete('/booking/delete/{id}', [BookingController::class, 'Destroy'])->name('Booking.destroy');
+});

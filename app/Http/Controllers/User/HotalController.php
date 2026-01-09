@@ -6,7 +6,7 @@ use App\Models\Rooms;
 use App\Http\Controllers\Controller;
 use App\Models\RoomsTypes;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class HotalController extends Controller
 {
     public function index()
@@ -14,7 +14,12 @@ class HotalController extends Controller
         $rooms = Rooms::with('roomType')->get();
         $room_type=RoomsTypes::all();
         $testimonials = \App\Models\Review::with('user')->latest()->limit(6)->get();
-        return view('hotal.index',compact('rooms','room_type', 'testimonials'));
+        if(Auth::user()->role=='user'){
+return view('hotal.index',compact('rooms','room_type', 'testimonials'));
+        }
+         // Optional: redirect others (admin or guest) somewhere
+    return redirect()->route('dashboard');
+        
     }
 
     public function room()
