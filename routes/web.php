@@ -7,6 +7,7 @@ use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\HotalController;
+use App\Http\Controllers\User\ReviewController;
 
 // Authentication
 
@@ -28,13 +29,24 @@ Route::middleware('authcheck')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
     Route::post('/booking/cancel/{id}', [HotalController::class, 'CancelBooking'])->name('booking.cancel');
     Route::post('/check-availability', [HotalController::class, 'checkAvailability'])->name('check.availability');
+    Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
 });
 
+
+use App\Http\Controllers\UserController;
 
 // admin
 Route::get('admin/dashboard', [DashboardController::class, 'Dashboard'])->name('dashboard');
 // room type list
 Route::get('admin/rooms', [DashboardController::class, 'Rooms'])->name('rooms');
+Route::get('admin/testimonial', [DashboardController::class, 'Testimonials'])->name('testimonials.index');
+Route::put('admin/testimonial/{id}', [DashboardController::class, 'testimonialUpdate'])->name('testimonials.update');
+Route::delete('admin/testimonial/{id}', [DashboardController::class, 'testimonialDestroy'])->name('testimonials.destroy');
+
+// Guest management
+Route::get('admin/guests', [UserController::class, 'index'])->name('guests.index');
+Route::put('admin/guests/{id}', [UserController::class, 'update'])->name('guests.update');
+Route::delete('admin/guests/{id}', [UserController::class, 'destroy'])->name('guests.destroy');
 Route::post('rooms/store', [RoomsController::class, 'store'])->name('rooms.store');
 Route::put('/rooms/{id}', [RoomsController::class, 'update'])->name('rooms.update');
 Route::delete('/rooms/{id}', [RoomsController::class, 'destroy'])->name('rooms.destroy');

@@ -63,6 +63,24 @@ class BookingController extends Controller
 
         $totalPrice = $nights * $request->base_price;
 
+        // Backend availability check
+        $room = \App\Models\Rooms::where('room_number', $request->room_no)->first();
+        
+        // Check if room is available in rooms table
+        $isAvailableInTable = $room && $room->status === 'available';
+        
+        // Check for existing active bookings
+        $hasExistingBooking = \App\Models\Booking::where('RoomNo', $request->room_no)
+            ->whereIn('status', ['pending', 'booked'])
+            ->exists();
+
+        if (!$isAvailableInTable || $hasExistingBooking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, this room is no longer available for booking.',
+            ], 422);
+        }
+
         \App\Models\Booking::create([
             'Guest' => \Illuminate\Support\Facades\Auth::user()->name,
             'RoomType' => $request->room_type,

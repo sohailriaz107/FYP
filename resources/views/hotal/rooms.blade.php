@@ -24,86 +24,39 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-9">
-                <div class="row">
+                <div class="row" id="rooms-list">
                     @foreach ($rooms as $room )
-                        
-                   
-                   <div class="col-sm col-md-6 col-lg-4 ftco-animate">
-    <div class="room">
-        <a href="{{ route('room-single', ['id' => $room->id]) }}" class="img d-flex justify-content-center align-items-center"
-            style="background-image: url('{{ asset('assets/images/room-1.jpg') }}');">
-            <div class="icon d-flex justify-content-center align-items-center">
-                <span class="icon-search2"></span>
-            </div>
-        </a>
-        <div class="text p-3 text-center">
-            <h3 class="mb-3"><a href="{{ route('room-single', ['id' => $room->id]) }}">{{$room->RoomType->name}}</a></h3>
-            <h3><span class="price mr-2"></span>$ {{$room->RoomType->base_price}} <span class="per" style="color: black;">per night</span></h3>
-            <ul class="list">
-                @php
-                    $statusColor = match(strtolower($room->status)) {
-                        'available' => 'success',
-                        'occupied' => 'danger',
-                        'cleaning' => 'info',
-                        'maintenance' => 'warning',
-                        default => 'secondary'
-                    };
-                @endphp
-                <li style="padding:5px;"><span >Status:</span> <span style="color: black;padding:10px;" class="badge badge-{{ $statusColor }}">{{ ucfirst($room->status) }}</span></li>
-                <li><span>Max Person:</span> {{$room->RoomType->max_persons}} </li>
-                <li><span>Size:</span> {{$room->RoomType->room_size}} </li>
-                <li><span>Room No :</span> {{$room->room_number}} </li>
-                <li><span>Bed: </span> {{$room->RoomType->beds}} </li>
-            </ul>
-            <hr>
-            <p class="pt-1"><a href="{{ route('room-single', ['id' => $room->id]) }}" class="btn-custom">Book Now <span
-                        class="icon-long-arrow-right"></span></a></p>
-        </div>
-    </div>
-</div>
-                     @endforeach
-                 
+                        @include('hotal.partials.room_card', ['room' => $room])
+                    @endforeach
                 </div>
             </div>
             <div class="col-lg-3 sidebar">
                 <div class="sidebar-wrap bg-light ftco-animate">
                     <h3 class="heading mb-4">Advanced Search</h3>
-                    <form action="#">
+                    <form action="{{ route('check.availability') }}" method="POST" id="rooms-search-form">
+                        @csrf
                         <div class="fields">
                             <div class="form-group">
-                                <input type="text" id="checkin_date" class="form-control checkin_date"
-                                    placeholder="Check In Date">
+                                <input type="text" name="check_in" id="checkin_date" class="form-control checkin_date"
+                                    placeholder="Check In Date" required>
                             </div>
                             <div class="form-group">
-                                <input type="text" id="checkin_date" class="form-control checkout_date"
-                                    placeholder="Check Out Date">
+                                <input type="text" name="check_out" id="checkout_date" class="form-control checkout_date"
+                                    placeholder="Check Out Date" required>
                             </div>
                             <div class="form-group">
                                 <div class="select-wrap one-third">
                                     <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                    <select name="" id="" class="form-control">
-                                        <option value="">Room Type</option>
-                                        <option value="">Suite</option>
-                                        <option value="">Family Room</option>
-                                        <option value="">Deluxe Room</option>
-                                        <option value="">Classic Room</option>
-                                        <option value="">Superior Room</option>
-                                        <option value="">Luxury Room</option>
+                                    <select name="room_type" id="room_type" class="form-control" required>
+                                        <option value="">Select Room Type</option>
+                                        @foreach($room_types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
                            
-                            <div class="form-group">
-                                <div class="range-slider">
-                                    <span>
-                                        <input type="number" value="25000" min="0" max="120000" /> -
-                                        <input type="number" value="50000" min="0" max="120000" />
-                                    </span>
-                                    <input value="1000" min="0" max="120000" step="500" type="range" />
-                                    <input value="50000" min="0" max="120000" step="500" type="range" />
-                                    </svg>
-                                </div>
-                            </div>
+                            
                             <div class="form-group">
                                 <input type="submit" value="Search" class="btn btn-primary py-3 px-5">
                             </div>
@@ -163,4 +116,55 @@
 
 
 
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    $('#rooms-search-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        var formData = $(this).serialize();
+        
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Found!',
+                        text: response.message + ' (' + response.available_count + ' rooms found)',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    
+                    // Dynamic update of rooms list
+                    $('#rooms-list').html(response.html);
+                    
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Not Available',
+                        text: response.message
+                    });
+                }
+            },
+            error: function(xhr) {
+                var message = 'Something went wrong. Please try again.';
+                if (xhr.status === 422) {
+                    var errors = xhr.responseJSON.errors;
+                    message = Object.values(errors).flat().join('\n');
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+            }
+        });
+    });
+});
+</script>
+@endsection
 @endsection

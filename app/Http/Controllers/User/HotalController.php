@@ -13,13 +13,15 @@ class HotalController extends Controller
     {
         $rooms = Rooms::with('roomType')->get();
         $room_type=RoomsTypes::all();
-        return view('hotal.index',compact('rooms','room_type'));
+        $testimonials = \App\Models\Review::with('user')->latest()->limit(6)->get();
+        return view('hotal.index',compact('rooms','room_type', 'testimonials'));
     }
 
     public function room()
     {
         $rooms = Rooms::with('roomType')->get();
-        return view('hotal.rooms', compact('rooms'));
+        $room_types = RoomsTypes::all();
+        return view('hotal.rooms', compact('rooms', 'room_types'));
     }
     public function RoomSingle(Request $request, $id)
     {
@@ -39,7 +41,16 @@ class HotalController extends Controller
             ->first();
         $bookingStatus = $booking ? $booking->status : null;
 
-        return view('hotal.room-single', compact('room', 'sameRooms', 'bookingStatus'));
+        // Check if the room is already booked by ANYONE (pending or booked status)
+        $isRoomBooked = \App\Models\Booking::where('RoomNo', $room->room_number)
+            ->whereIn('status', ['pending', 'booked'])
+            ->exists();
+
+        // Fetch reviews for this room
+        $reviews = \App\Models\Review::where('room_id', $id)->with('user')->latest()->get();
+        $averageRating = $reviews->avg('rating');
+
+        return view('hotal.room-single', compact('room', 'sameRooms', 'bookingStatus', 'reviews', 'averageRating', 'isRoomBooked'));
     }
 
     public function Resturent()

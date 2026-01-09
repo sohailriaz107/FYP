@@ -58,6 +58,7 @@
 								<li><span>Bed:</span>{{$room->roomType->beds}}</li>
 							</ul>
 						</div>
+					
 
 					</div>
 					<!-- Amenties -->
@@ -94,39 +95,39 @@
 					<div class="col-md-12 properties-single ftco-animate mb-5 mt-4">
 						<h4 class="mb-4">Review &amp; Ratings</h4>
 						<div class="row">
-							<div class="col-md-6">
-								<form method="post" class="star-rating">
-									<div class="form-check">
-										<input type="checkbox" class="form-check-input" id="exampleCheck1">
-										<label class="form-check-label" for="exampleCheck1">
-											<p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i> 100 Ratings</span></p>
-										</label>
-									</div>
-									<div class="form-check">
-										<input type="checkbox" class="form-check-input" id="exampleCheck1">
-										<label class="form-check-label" for="exampleCheck1">
-											<p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-o"></i> 30 Ratings</span></p>
-										</label>
-									</div>
-									<div class="form-check">
-										<input type="checkbox" class="form-check-input" id="exampleCheck1">
-										<label class="form-check-label" for="exampleCheck1">
-											<p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-o"></i><i class="icon-star-o"></i> 5 Ratings</span></p>
-										</label>
-									</div>
-									<div class="form-check">
-										<input type="checkbox" class="form-check-input" id="exampleCheck1">
-										<label class="form-check-label" for="exampleCheck1">
-											<p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-o"></i><i class="icon-star-o"></i><i class="icon-star-o"></i> 0 Ratings</span></p>
-										</label>
-									</div>
-									<div class="form-check">
-										<input type="checkbox" class="form-check-input" id="exampleCheck1">
-										<label class="form-check-label" for="exampleCheck1">
-											<p class="rate"><span><i class="icon-star"></i><i class="icon-star-o"></i><i class="icon-star-o"></i><i class="icon-star-o"></i><i class="icon-star-o"></i> 0 Ratings</span></p>
-										</label>
-									</div>
-								</form>
+							<div class="col-md-12">
+								<div class="rating-wrap mb-4">
+									<p class="rate">
+										<span>
+											@for($i=1; $i<=5; $i++)
+												<i class="{{ $i <= $averageRating ? 'icon-star' : 'icon-star-o' }}"></i>
+											@endfor
+											({{ number_format($averageRating, 1) }} Average Rating)
+										</span>
+									</p>
+								</div>
+								
+								<div class="review-list">
+									@forelse($reviews as $review)
+										<div class="review-item mb-4 pb-3" style="border-bottom: 1px solid #eee;">
+											<div class="d-flex align-items-center mb-2">
+												<img src="{{ $review->user->image ? asset($review->user->image) : 'https://via.placeholder.com/50' }}" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover;">
+												<div>
+													<h5 class="mb-0" style="font-size: 16px; font-weight: bold;">{{ $review->user->name }}</h5>
+													<div class="stars" style="color: gold;">
+														@for($i=1; $i<=5; $i++)
+															<i class="{{ $i <= $review->rating ? 'icon-star' : 'icon-star-o' }}"></i>
+														@endfor
+													</div>
+												</div>
+												<small class="ml-auto text-muted">{{ $review->created_at->diffForHumans() }}</small>
+											</div>
+											<p style="color: #666; font-style: italic;">"{{ $review->message }}"</p>
+										</div>
+									@empty
+										<p class="text-muted">No reviews yet for this room.</p>
+									@endforelse
+								</div>
 							</div>
 						</div>
 					</div>
@@ -197,6 +198,16 @@
 
 						<div id="booking-message" style="margin-bottom: 20px; display: none;"></div>
 
+						@if($room->status !== 'available' || $isRoomBooked)
+							<div class="alert alert-warning text-center" style="font-weight: bold; border-radius: 8px;">
+								@if($isRoomBooked)
+									This room is already booked.
+								@else
+									This room is currently {{ ucfirst($room->status) }}. It cannot be booked at this time.
+								@endif
+							</div>
+						@endif
+
 						<form id="bookingForm" action="{{route('Booking.post')}}" method="post">
 							@csrf
 							<!-- Check In -->
@@ -205,7 +216,8 @@
 							</label>
 							<input type="date" name="check_in" required
 								style="width:100%; padding:10px; margin:6px 0 15px;
-                               border:1px solid #ccc; border-radius:8px; outline:none;">
+                               border:1px solid #ccc; border-radius:8px; outline:none;"
+                               {{ ($room->status === 'available' && !$isRoomBooked) ? '' : 'disabled' }}>
 
 							<!-- Check Out -->
 							<label style="font-size:14px; font-weight:600; color:#34495e;">
@@ -213,7 +225,8 @@
 							</label>
 							<input type="date" name="check_out" required
 								style="width:100%; padding:10px; margin:6px 0 15px;
-                         border:1px solid #ccc; border-radius:8px; outline:none;">
+                         border:1px solid #ccc; border-radius:8px; outline:none;"
+                               {{ ($room->status === 'available' && !$isRoomBooked) ? '' : 'disabled' }}>
 
 							<!-- Max Guest -->
 							<label style="font-size:14px; font-weight:600; color:#34495e;">
@@ -221,7 +234,8 @@
 							</label>
 							<select name="guests"
 								style="width:100%; padding:10px; margin:6px 0 20px;
-                           border:1px solid #ccc; border-radius:8px; outline:none;">
+                           border:1px solid #ccc; border-radius:8px; outline:none;"
+                               {{ ($room->status === 'available' && !$isRoomBooked) ? '' : 'disabled' }}>
 								<option selected disabled>Select Max Guests</option>
 								@for ($i = 1; $i <= $room->roomType->max_persons; $i++)
 									<option value="{{ $i }}">{{ $i }}</option>
@@ -234,10 +248,11 @@
 							<input type="hidden" name="base_price" value="{{ $room->roomType->base_price }}">
 
 							<!-- Submit Button -->
-							<input type="submit" value="Book Now"
-								style="width:100%; padding:12px; background:#3498db;
+							<input type="submit" value="{{ ($room->status === 'available' && !$isRoomBooked) ? 'Book Now' : 'Room Already Booked' }}"
+								style="width:100%; padding:12px; background:{{ ($room->status === 'available' && !$isRoomBooked) ? '#3498db' : '#95a5a6' }};
                           color:#fff; border:none; border-radius:8px;
-                              font-size:16px; font-weight:600; cursor:pointer;">
+                               font-size:16px; font-weight:600; cursor:{{ ($room->status === 'available' && !$isRoomBooked) ? 'pointer' : 'not-allowed' }};"
+                               {{ ($room->status === 'available' && !$isRoomBooked) ? '' : 'disabled' }}>
 						</form>
 					</div>
 

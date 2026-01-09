@@ -73,16 +73,16 @@
 
         <!-- Guest -->
         <li class="nav-item">
-            <a class="nav-link"
-                href="#">
-                <i class="bi bi-calendar-check me-2"></i> Guest
+            <a class="nav-link {{ request()->routeIs('guests.index') ? 'active' : '' }}"
+                href="{{ route('guests.index') }}">
+                <i class="bi bi-people-fill me-2"></i> Guest
             </a>
         </li>
 
           <li class="nav-item">
-            <a class="nav-link "
-                href="#">
-                <i class="bi bi-calendar-check me-2"></i> Testimonials
+            <a class="nav-link {{ request()->routeIs('testimonials.index') ? 'active' : '' }}"
+                href="{{ route('testimonials.index') }}">
+                <i class="bi bi-chat-square-quote me-2"></i> Testimonials
             </a>
         </li>
           <li class="nav-item">

@@ -28,20 +28,24 @@
         </div>
 
         <div style="margin-top:40px;">
-            <div id="tab-basic-info" class="tab-item active-tab" onclick="showSection('basic-info')" style="font-size:18px; margin:17px 0; font-weight:bold; cursor:pointer; color:#fff; padding:7px; border-radius:5px; transition: 0.3s;"> 
+            <div id="tab-basic-info" class="tab-item active-tab" onclick="showSection('basic-info')" style="font-size:18px; margin:17px 0; font-weight:bold; cursor:pointer; color:#fff; padding:7px; border-radius:5px; transition: 0.3s;">
                 <i class="fa fa-user"></i> Basic Information
             </div>
-           
-            <div id="tab-activity" class="tab-item" onclick="showSection('activity')" style="font-size:18px; margin:17px 0; font-weight:bold; cursor:pointer; color:#fff; padding:7px; border-radius:5px; transition: 0.3s;"> 
-                Activity 
+
+            <div id="tab-activity" class="tab-item" onclick="showSection('activity')" style="font-size:18px; margin:17px 0; font-weight:bold; cursor:pointer; color:#fff; padding:7px; border-radius:5px; transition: 0.3s;">
+                Activity
             </div>
-            
-            <div id="tab-settings" class="tab-item" onclick="showSection('settings')" style="font-size:18px; margin:17px 0; font-weight:bold; cursor:pointer; color:#fff; padding:7px; border-radius:5px; transition: 0.3s;"> 
+
+            <div id="tab-review" class="tab-item" onclick="showSection('review')" style="font-size:18px; margin:17px 0; font-weight:bold; cursor:pointer; color:#fff; padding:7px; border-radius:5px; transition: 0.3s;">
+                Testimonial
+            </div>
+
+            <div id="tab-settings" class="tab-item" onclick="showSection('settings')" style="font-size:18px; margin:17px 0; font-weight:bold; cursor:pointer; color:#fff; padding:7px; border-radius:5px; transition: 0.3s;">
                 Setting
             </div>
-            
-            <p style="font-size:22px; margin:20px 0; font-weight:bold; padding-left:10px;"> 
-                <a href="{{route('admin.logout')}}" style="color:#fff; text-decoration:none;">Logout</a> 
+
+            <p style="font-size:22px; margin:20px 0; font-weight:bold; padding-left:10px;">
+                <a href="{{route('admin.logout')}}" style="color:#fff; text-decoration:none;">Logout</a>
             </p>
         </div>
     </div>
@@ -51,6 +55,7 @@
             background: #28a745 !important;
             color: #fff !important;
         }
+
         .tab-item:hover {
             background: rgba(40, 167, 69, 0.2);
         }
@@ -58,7 +63,7 @@
 
     <!-- Content -->
     <div style="flex:1; padding:40px;">
-        
+
         <!-- Basic Information Section -->
         <div id="basic-info-section" class="profile-section">
             <h2 style="text-align:center; margin-top:0;">User Profile</h2>
@@ -95,47 +100,96 @@
             <h2 style="text-align:center; margin-top:0;">User Activity</h2>
             <div class="activity" style="text-align: center; margin-top:30px;">
                 @if($booking)
-                    <h3>Recent Booking</h3>
-                    <div class="room-image" style="margin: 20px 0;">
-                        @if($booking->room && $booking->room->images->count() > 0)
-                            <img src="{{ asset('storage/' . $booking->room->images->first()->image_path) }}" alt="Room Image" width="200px" style="border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
-                        @else
-                            <img src="https://via.placeholder.com/200" alt="No Image" width="200px" style="border-radius:10px;">
-                        @endif
-                        
-                        <h5 style="margin-top:15px; font-weight:bold;">{{ $booking->RoomType }}</h5>
-                        <p style="color:#666;">Room Number: {{ $booking->RoomNo }}</p>
-                    </div>
-                    <div class="chekinout" style="display:flex; justify-content:center; gap:30px; margin: 20px 0;">
-                        <div>
-                            <p style="font-size:14px; margin-bottom:5px; font-weight:bold;">Check In</p>
-                            <span style="background:green; padding:5px 15px; border-radius:15px; border:1px solid black; color:white;">{{ $booking->Check_in }}</span>
-                        </div>
-                        <div>
-                            <p style="font-size:14px; margin-bottom:5px; font-weight:bold;">Check Out</p>
-                            <span style="background:red; padding:5px 15px; border-radius:15px; border:1px solid black; color:white;">{{ $booking->Check_out }}</span>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top:20px;">
-                        <p>Status: <strong class="booking-status" style="text-transform: capitalize; color: {{ $booking->status == 'cancelled' ? 'red' : ($booking->status == 'booked' ? 'green' : 'orange') }}">{{ $booking->status }}</strong></p>
-                    </div>
-
-                    @if($booking->status != 'cancelled')
-                    <div class="cancel-booking-container" style="margin-top:30px;">
-                        <button type="button" onclick="confirmCancellation({{ $booking->id }})" class="btn btn-danger" style="padding:10px 30px; border-radius:20px; font-weight:bold;">Cancel booking</button>
-                    </div>
+                <h3>Recent Booking</h3>
+                <div class="room-image" style="margin: 20px 0;">
+                    @if($booking->room && $booking->room->images->count() > 0)
+                    <img src="{{ asset('storage/' . $booking->room->images->first()->image_path) }}" alt="Room Image" width="200px" style="border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+                    @else
+                    <img src="https://via.placeholder.com/200" alt="No Image" width="200px" style="border-radius:10px;">
                     @endif
+
+                    <h5 style="margin-top:15px; font-weight:bold;">{{ $booking->RoomType }}</h5>
+                    <p style="color:#666;">Room Number: {{ $booking->RoomNo }}</p>
+                </div>
+                <div class="chekinout" style="display:flex; justify-content:center; gap:30px; margin: 20px 0;">
+                    <div>
+                        <p style="font-size:14px; margin-bottom:5px; font-weight:bold;">Check In</p>
+                        <span style="background:green; padding:5px 15px; border-radius:15px; border:1px solid black; color:white;">{{ $booking->Check_in }}</span>
+                    </div>
+                    <div>
+                        <p style="font-size:14px; margin-bottom:5px; font-weight:bold;">Check Out</p>
+                        <span style="background:red; padding:5px 15px; border-radius:15px; border:1px solid black; color:white;">{{ $booking->Check_out }}</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <p>Status: <strong class="booking-status" style="text-transform: capitalize; color: {{ $booking->status == 'cancelled' ? 'red' : ($booking->status == 'booked' ? 'green' : 'orange') }}">{{ $booking->status }}</strong></p>
+                </div>
+
+                @if($booking->status != 'cancelled')
+                <div class="cancel-booking-container" style="margin-top:30px;">
+                    <button type="button" onclick="confirmCancellation({{ $booking->id }})" class="btn btn-danger" style="padding:10px 30px; border-radius:20px; font-weight:bold;">Cancel booking</button>
+                </div>
+                @endif
                 @else
-                    <p style="color:#666; font-style:italic;">No recent booking activities found.</p>
+                <p style="color:#666; font-style:italic;">No recent booking activities found.</p>
                 @endif
             </div>
         </div>
+        <!-- Feedback Section -->
+        <div id="review-section" class="profile-section" style="display:none;">
+            <h2 style="text-align:center; margin-top:0;">Give us review</h2>
 
+            <form id="reviewForm">
+                @csrf
+                @if($booking && $booking->room)
+                    <input type="hidden" name="room_id" value="{{ $booking->room->id }}">
+                @endif
+                <input type="hidden" name="rating" id="selected_rating" value="0">
+                <!-- Profile Image Upload -->
+                <div style=" gap:40px; margin-top:30px;">
+                    <!-- Left Column -->
+                    <label style="font-weight:bold;">Message</label>
+                    <textarea style="color: black;" class="form-control" rows="3" name="message" placeholder="Share your experience..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; cursor: pointer;" id="star-container">
+                    <div data-value="1" style="font-size: 50px; width: 60px; height: 60px;  display: flex; align-items: center; justify-content: center; color: black;">★</div>
+                    <div data-value="2" style="font-size: 50px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; color: black;">★</div>
+                    <div data-value="3" style="font-size: 50px; width: 60px; height: 60px;  display: flex; align-items: center; justify-content: center; color: black;">★</div>
+                    <div data-value="4" style="font-size: 50px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; color: black;">★</div>
+                    <div data-value="5" style="font-size: 50px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; color: black;">★</div>
+                </div>
+
+               <script>
+const stars = document.querySelectorAll('#star-container div');
+let selectedRating = 0;
+
+stars.forEach(star => {
+    const value = parseInt(star.getAttribute('data-value'));
+
+    star.addEventListener('click', () => {
+        selectedRating = value;
+        document.getElementById('selected_rating').value = selectedRating;
+        stars.forEach(s => {
+            const v = parseInt(s.getAttribute('data-value'));
+            // Selected stars = gold, unselected = white, all keep black border
+            s.style.color = v <= selectedRating ? 'gold' : 'black';
+           
+        });
+    });
+});
+</script>
+
+                <div class="buttons mt-3" style="text-align: end;">
+                    <button class="btn btn-info"> Send </button>
+                </div>
+
+            </form>
+        </div>
         <!-- Settings Section -->
         <div id="settings-section" class="profile-section" style="display:none;">
             <h2 style="text-align:center; margin-top:0;">Change Personal Info</h2>
-            
+
             <form id="profileUpdateForm" enctype="multipart/form-data">
                 @csrf
                 <!-- Profile Image Upload -->
@@ -172,7 +226,7 @@
                         <label style="font-weight:bold;">Address</label>
                         <input type="text" name="address" value="{{ $user->address }}" placeholder="Your address"
                             style="width:100%; padding:10px; margin:8px 0 20px; border-radius:5px; border:1px solid #ddd;">
-                        
+
                         <label style="font-weight:bold;">Phone</label>
                         <input type="text" name="phone" value="{{ $user->phone }}" placeholder="Your phone number"
                             style="width:100%; padding:10px; margin:8px 0 20px; border-radius:5px; border:1px solid #ddd;">
@@ -180,7 +234,7 @@
                 </div>
 
                 <h2 style="margin-top:20px; border-top: 1px solid #eee; padding-top:20px;">Update Password</h2>
-                
+
                 <div style="display:flex; gap:40px; margin-top:20px;">
                     <div style="flex:1;">
                         <label style="font-weight:bold;">Current Password</label>
@@ -220,7 +274,7 @@
         document.querySelectorAll('.profile-section').forEach(section => {
             section.style.display = 'none';
         });
-        
+
         // Show selected section
         document.getElementById(sectionId + '-section').style.display = 'block';
 
@@ -239,7 +293,7 @@
     // AJAX Profile Update
     $('#profileUpdateForm').on('submit', function(e) {
         e.preventDefault();
-        
+
         let formData = new FormData(this);
         let submitBtn = $(this).find('button[type="submit"]');
         submitBtn.prop('disabled', true).text('Updating...');
@@ -255,8 +309,8 @@
             },
             success: function(response) {
                 submitBtn.prop('disabled', false).text('Update Password');
-                
-                if(response.status === 'success') {
+
+                if (response.status === 'success') {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
@@ -266,7 +320,7 @@
                     });
 
                     // Update UI elements
-                    if(response.user.image) {
+                    if (response.user.image) {
                         let imageUrl = "{{ asset('') }}" + response.user.image;
                         $('.sidebar-img').attr('src', imageUrl);
                         $('.basic-info-img').attr('src', imageUrl);
@@ -276,7 +330,7 @@
                     $('.info-email').text(response.user.email);
                     $('.info-address').text(response.user.address || 'Not provided');
                     $('.info-phone').text(response.user.phone || 'Not provided');
-                    
+
                     // Clear passwords
                     $('input[name="current_password"]').val('');
                     $('input[name="new_password"]').val('');
@@ -285,11 +339,11 @@
             error: function(xhr) {
                 submitBtn.prop('disabled', false).text('Update Password');
                 let message = 'Something went wrong!';
-                
-                if(xhr.status === 422) {
+
+                if (xhr.status === 422) {
                     let errors = xhr.responseJSON.errors;
                     message = Object.values(errors).flat().join('<br>');
-                } else if(xhr.responseJSON && xhr.responseJSON.message) {
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
                     message = xhr.responseJSON.message;
                 }
 
@@ -321,7 +375,7 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        if(response.status === 'success') {
+                        if (response.status === 'success') {
                             Swal.fire(
                                 'Cancelled!',
                                 response.message,
@@ -332,7 +386,7 @@
                                 $('.cancel-booking-container').fadeOut();
                             });
                         } else {
-                             Swal.fire(
+                            Swal.fire(
                                 'Error!',
                                 response.message,
                                 'error'
@@ -350,6 +404,51 @@
             }
         })
     }
+
+    // AJAX Review Submission
+    $('#reviewForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let formData = $(this).serialize();
+        let submitBtn = $(this).find('button');
+        submitBtn.prop('disabled', true).text('Sending...');
+
+        $.ajax({
+            url: "{{ route('review.store') }}",
+            type: "POST",
+            data: formData,
+            success: function(response) {
+                submitBtn.prop('disabled', false).text('Send');
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    $('#reviewForm')[0].reset();
+                    stars.forEach(s => s.style.color = 'black');
+                    document.getElementById('selected_rating').value = 0;
+                }
+            },
+            error: function(xhr) {
+                submitBtn.prop('disabled', false).text('Send');
+                let message = 'Something went wrong!';
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    message = Object.values(errors).flat().join('<br>');
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    html: message
+                });
+            }
+        });
+    });
 </script>
 @endsection
 
