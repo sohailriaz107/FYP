@@ -109,4 +109,10 @@ class DashboardController extends Controller
             'message' => 'Testimonial deleted successfully!'
         ]);
     }
+
+    public function Setting()
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        return view('admin.setting', compact('user'));
+    }
 }

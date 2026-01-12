@@ -79,4 +79,7 @@ Route::post('/amenities/toggle-status', [AmenitiesController::class, 'toggleStat
     Route::post('/booking/post', [BookingController::class, 'post'])->name('Booking.post');
     Route::put('/booking/status/{id}', [BookingController::class, 'UpdateStatus'])->name('Booking.status');
     Route::delete('/booking/delete/{id}', [BookingController::class, 'Destroy'])->name('Booking.destroy');
+
+    // Setting
+    Route::get('admin/setting', [DashboardController::class, 'Setting'])->name('admin.setting');
 });

@@ -92,12 +92,7 @@
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link "
-                href="#">
-                <i class="bi bi-graph-up me-2"></i> Report
-            </a>
-        </li>
+      
 
         <li class="nav-item">
             <a class="nav-link "
@@ -107,8 +102,8 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link "
-                href="#">
+            <a class="nav-link {{ request()->routeIs('admin.setting') ? 'active' : '' }}"
+                href="{{ route('admin.setting') }}">
                 <i class="bi bi-gear-fill me-2"></i> Setting
             </a>
         </li>
