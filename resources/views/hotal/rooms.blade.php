@@ -17,7 +17,35 @@
         </div>
     </div>
 </div>
+<section class="ftco-section">
+    <div class="container bg-dark p-4 rounded">
+        <h3 class="text-center text-white mb-4">AI Room Recommendation For User</h3>
+        <div class="text-center">
+            <form id="ai-recommendation-form" method="POST" action="{{ route('ai.recommend') }}">
+                @csrf
 
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <input type="number" class="form-control" name="budget" placeholder="Your Budget (e.g. 5000)" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <select class="form-control" name="room_type">
+                            <option value="">Select Preferred Room Type (Optional)</option>
+                            @foreach($room_types as $type)
+                            <option value="{{ $type->name }}">{{ $type->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <textarea name="preferences" class="form-control" rows="1"
+                            placeholder="Preferences (e.g. WiFi, near university)"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary px-5">Get AI Recommendation</button>
+            </form>
+        </div>
+    </div>
+</section>
 
 
 <section class="ftco-section bg-light">
@@ -26,7 +54,7 @@
             <div class="col-lg-9">
                 <div class="row" id="rooms-list">
                     @foreach ($rooms as $room )
-                        @include('hotal.partials.room_card', ['room' => $room])
+                    @include('hotal.partials.room_card', ['room' => $room])
                     @endforeach
                 </div>
             </div>
@@ -50,64 +78,19 @@
                                     <select name="room_type" id="room_type" class="form-control" required>
                                         <option value="">Select Room Type</option>
                                         @foreach($room_types as $type)
-                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                           
-                            
+
+
                             <div class="form-group">
                                 <input type="submit" value="Search" class="btn btn-primary py-3 px-5">
                             </div>
                         </div>
                     </form>
                 </div>
-                <!-- <div class="sidebar-wrap bg-light ftco-animate">
-                    <h3 class="heading mb-4">Star Rating</h3>
-                    <form method="post" class="star-rating">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">
-                                <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                            class="icon-star"></i><i class="icon-star"></i><i
-                                            class="icon-star"></i></span></p>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">
-                                <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                            class="icon-star"></i><i class="icon-star"></i><i
-                                            class="icon-star-o"></i></span></p>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">
-                                <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                            class="icon-star"></i><i class="icon-star-o"></i><i
-                                            class="icon-star-o"></i></span></p>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">
-                                <p class="rate"><span><i class="icon-star"></i><i class="icon-star"></i><i
-                                            class="icon-star-o"></i><i class="icon-star-o"></i><i
-                                            class="icon-star-o"></i></span></p>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">
-                                <p class="rate"><span><i class="icon-star"></i><i class="icon-star-o"></i><i
-                                            class="icon-star-o"></i><i class="icon-star-o"></i><i
-                                            class="icon-star-o"></i></span></p>
-                            </label>
-                        </div>
-                    </form>
-                </div> -->
             </div>
         </div>
     </div>
@@ -119,52 +102,98 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-$(document).ready(function() {
-    $('#rooms-search-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        var formData = $(this).serialize();
-        
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: formData,
-            success: function(response) {
-                if (response.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Found!',
-                        text: response.message + ' (' + response.available_count + ' rooms found)',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    
-                    // Dynamic update of rooms list
-                    $('#rooms-list').html(response.html);
-                    
-                } else {
+    $(document).ready(function() {
+        // AI Recommendation Form
+        $('#ai-recommendation-form').on('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Thinking...',
+                text: 'AI is finding the best room for you',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'AI Recommendation',
+                            text: response.message,
+                            confirmButtonText: 'Great!'
+                        });
+
+                        $('#rooms-list').hide().html(response.html).fadeIn(500);
+                    } else {
+                        Swal.fire('Error', response.message, 'error');
+                    }
+                },
+                error: function(xhr) {
+                    var message = 'Failed to get recommendation.';
+                    if (xhr.status === 401) {
+                        message = 'Unauthorized: Please check your OpenAI API key.';
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    Swal.fire('Error', message, 'error');
+                }
+
+            });
+        });
+
+        // Availability Search Form
+        $('#rooms-search-form').on('submit', function(e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Found!',
+                            text: response.message + ' (' + response.available_count + ' rooms found)',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        // Dynamic update of rooms list
+                        $('#rooms-list').hide().html(response.html).fadeIn(500);
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Not Available',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    var message = 'Something went wrong. Please try again.';
+                    if (xhr.status === 422) {
+                        var errors = xhr.responseJSON.errors;
+                        message = Object.values(errors).flat().join('\n');
+                    }
                     Swal.fire({
                         icon: 'error',
-                        title: 'Not Available',
-                        text: response.message
+                        title: 'Error',
+                        text: message
                     });
                 }
-            },
-            error: function(xhr) {
-                var message = 'Something went wrong. Please try again.';
-                if (xhr.status === 422) {
-                    var errors = xhr.responseJSON.errors;
-                    message = Object.values(errors).flat().join('\n');
-                }
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: message
-                });
-            }
+            });
         });
     });
-});
 </script>
 @endsection
+
 @endsection

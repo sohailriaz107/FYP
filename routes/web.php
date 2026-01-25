@@ -33,7 +33,9 @@ Route::middleware('authcheck')->group(function () {
     Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
 
     Route::post('/contact/send', [MessageController::class, 'store'])->name('contact.send');
+    Route::post('/ai-recommend-room', [\App\Http\Controllers\AIRecommendationController::class, 'recommend'])->name('ai.recommend');
 });
+
 
 
 

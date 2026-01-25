@@ -57,98 +57,102 @@
 
                         <!-- edit modal -->
                         <div class="modal fade" id="EditRoom{{$room->id}}" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content"
-                                    style="border-radius:18px; border:0; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 15px 50px rgba(0,0,0,0.2); overflow: hidden;">
 
                                     <!-- Header -->
-                                    <div class="modal-header text-white"
-                                        style="background-color:darkgray; 
-                                       border-top-left-radius:18px; border-top-right-radius:18px;">
-                                        <h5 class="modal-title fw-bold" id="addRoomModalLabel">🛏️ Edit Room Type</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    <div class="modal-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 25px;">
+                                        <h5 class="modal-title fw-bold" id="addRoomModalLabel">
+                                            <i class="bi bi-pencil-square me-2"></i> Edit Room Category
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
                                     <!-- Body -->
-                                    <div class="modal-body p-4" style="background:#f8f9fc;">
+                                    <div class="modal-body p-5" style="background: #ffffff;">
                                         <form id="editRoomForm{{$room->id}}" class="editRoomForm" action="{{ route('rooms.update', $room->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
-                                            <!-- Room Name -->
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">Room Name <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control"
-                                                    style="border-radius:10px;"
-                                                    id="editName{{$room->id}}" name="roomName"
-                                                    placeholder="Enter the room type" maxlength="100" value="{{$room->name}}">
-                                            </div>
-                                            <!-- Base Price -->
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">Base Price (Per Night) <span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text" style="border-radius:10px 0 0 10px;">$</span>
-                                                    <input type="number" class="form-control"
-                                                        style="border-radius:0 10px 10px 0;"
-                                                        id="editPrice{{$room->id}}" name="basePrice" value="{{$room->base_price}}"
-                                                        placeholder="120.00" step="0.01" min="0.01">
+                                            
+                                            <div class="row">
+                                                <!-- Room Name -->
+                                                <div class="col-md-12 mb-4">
+                                                    <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Room Category Name <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-tag-fill text-muted"></i></span>
+                                                        <input type="text" class="form-control border-0 bg-light py-3" 
+                                                            style="border-radius: 0 12px 12px 0; font-size: 1rem;"
+                                                            id="editName{{$room->id}}" name="roomName" 
+                                                            placeholder="e.g. Deluxe Ocean Suite" maxlength="100" value="{{$room->name}}" required>
+                                                    </div>
                                                 </div>
-                                                <small class="text-muted">Enter the minimum price before taxes and promotions.</small>
-                                            </div>
 
-                                            <!-- Room Size -->
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">Room Size <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control"
-                                                    style="border-radius:10px;"
-                                                    name="room_size"
-                                                    placeholder="Enter room size" value="{{$room->room_size}}">
-                                            </div>
+                                                <!-- Base Price -->
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Base Price (Per Night) <span class="text-danger">*</span></label>
+                                                    <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                                                        <span class="input-group-text bg-dark text-white border-0">$</span>
+                                                        <input type="number" class="form-control border-0 bg-light py-3" 
+                                                            id="editPrice{{$room->id}}" name="basePrice" value="{{$room->base_price}}"
+                                                            placeholder="0.00" step="0.01" min="0.01" required>
+                                                    </div>
+                                                </div>
 
-                                            <!-- Beds -->
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">Beds <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control"
-                                                    style="border-radius:10px;"
-                                                    name="beds"
-                                                    placeholder="Number of beds" value="{{$room->beds}}">
-                                            </div>
+                                                <!-- Room Size -->
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Room Size <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-arrows-fullscreen text-muted"></i></span>
+                                                        <input type="text" class="form-control border-0 bg-light py-3" 
+                                                            style="border-radius: 0 12px 12px 0;"
+                                                            name="room_size" placeholder="e.g. 450 sq ft" value="{{$room->room_size}}" required>
+                                                    </div>
+                                                </div>
 
-                                            <!-- Max Persons -->
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">Max Persons <span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control"
-                                                    style="border-radius:10px;"
-                                                    name="max_person"
-                                                    placeholder="Max persons" value="{{$room->max_persons}}">
-                                            </div>
+                                                <!-- Beds -->
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Total Beds <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-door-open-fill text-muted"></i></span>
+                                                        <input type="text" class="form-control border-0 bg-light py-3" 
+                                                            style="border-radius: 0 12px 12px 0;"
+                                                            name="beds" placeholder="e.g. 2 King Size" value="{{$room->beds}}" required>
+                                                    </div>
+                                                </div>
 
+                                                <!-- Max Persons -->
+                                                <div class="col-md-6 mb-4">
+                                                    <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Max Guests <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-people-fill text-muted"></i></span>
+                                                        <input type="number" class="form-control border-0 bg-light py-3" 
+                                                            style="border-radius: 0 12px 12px 0;"
+                                                            name="max_person" placeholder="e.g. 4" value="{{$room->max_persons}}" required>
+                                                    </div>
+                                                </div>
 
-
-                                            <!-- Description -->
-                                            <div class="mb-0">
-                                                <label class="form-label fw-semibold">Description</label>
-                                                <textarea class="form-control"
-                                                    style="border-radius:10px;"
-                                                    id="editDescription{{$room->id}}" name="description"
-                                                    rows="3"
-                                                    placeholder="A brief summary of the room's features and amenities..."
-                                                    maxlength="500">{{$room->description}}</textarea>
-                                                <small class="text-muted">Highlight key features (e.g., 'Ocean view', 'King bed').</small>
+                                                <!-- Description -->
+                                                <div class="col-md-12 mb-0">
+                                                    <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Description</label>
+                                                    <textarea class="form-control border-0 bg-light p-3" 
+                                                        style="border-radius: 12px; font-size: 0.95rem;"
+                                                        id="editDescription{{$room->id}}" name="description" 
+                                                        rows="4" 
+                                                        placeholder="Describe the unique features and luxury amenities of this room category..."
+                                                        maxlength="500">{{$room->description}}</textarea>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
 
                                     <!-- Footer -->
-                                    <div class="modal-footer" style="background:#f1f3f6; border-bottom-left-radius:18px; border-bottom-right-radius:18px;">
-                                        <button type="button" class="btn btn-light px-4"
-                                            style="border-radius:10px; border:1px solid #d0d0d0;"
-                                            data-bs-dismiss="modal">Cancel</button>
-
-                                        <button type="submit" form="editRoomForm{{$room->id}}"
-                                            class="btn btn-success px-4" style="border-radius:10px;">
-                                            Update Room
+                                    <div class="modal-footer p-4" style="background: #f8f9fa; border: none;">
+                                        <button type="button" class="btn btn-link text-decoration-none text-muted fw-bold px-4" data-bs-dismiss="modal">Discard Changes</button>
+                                        <button type="submit" form="editRoomForm{{$room->id}}" 
+                                            class="btn btn-primary px-5 py-2 fw-bold" 
+                                            style="border-radius: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);">
+                                            Update Category
                                         </button>
-
                                     </div>
                                 </div>
                             </div>
@@ -163,82 +167,102 @@
     </div>
 
     <!-- pop-up for adding rooms -->
-    <div class="modal fade" id="addRoomModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    <div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 15px 50px rgba(0,0,0,0.2); overflow: hidden;">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Room</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <!-- Header -->
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border: none; padding: 25px;">
+                    <h5 class="modal-title fw-bold" id="addRoomModalLabel">
+                        <i class="bi bi-plus-circle-fill me-2"></i> Add New Room Category
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body">
+                <!-- Body -->
+                <div class="modal-body p-5" style="background: #ffffff;">
                     <form id="addRoomForm" action="{{ route('rooms.store') }}" method="POST">
                         @csrf
-
-                        <!-- Room Name -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Room Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control"
-                                id="roomName" name="roomName"
-                                placeholder="Enter the room name" maxlength="100" required>
-                            
-                        </div>
-
-                        <!-- room size -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Room Size <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control"
-                                id="addRoomSize" name="room_size"
-                                placeholder="Enter the room size in feet" maxlength="100" required>
-
-                        </div>
-                        <!-- beds -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold"> Max Beds <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control"
-                                id="beds" name="beds"
-                                maxlength="100" required>
-
-                        </div>
-
-                        <!-- max_person -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Max Person <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control"
-                                id="maxPerson" name="max_person"
-                                maxlength="100" required>
-
-                        </div>
-
-                        <!-- Base Price -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Base Price (Per Night) <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" class="form-control"
-                                    id="basePrice" name="basePrice"
-                                    placeholder="120.00" step="0.01" min="0.01" required>
+                        
+                        <div class="row">
+                            <!-- Room Name -->
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Room Category Name <span class="text-danger">*</span></label>
+                                <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                                    <span class="input-group-text bg-light border-0"><i class="bi bi-tag-fill text-muted"></i></span>
+                                    <input type="text" class="form-control border-0 bg-light py-3" 
+                                        id="roomName" name="roomName" 
+                                        placeholder="e.g. Luxury Penthouse" maxlength="100" required>
+                                </div>
                             </div>
-                            <small class="text-muted">Enter the minimum price before taxes and promotions.</small>
-                        </div>
 
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Description</label>
-                            <textarea class="form-control"
-                                id="description" name="description"
-                                rows="3" placeholder="A brief summary of the room's features..." maxlength="500"></textarea>
-                            <small class="text-muted">Highlight key features (e.g., 'Ocean view', 'King bed').</small>
-                        </div>
+                            <!-- Base Price -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Base Price (Per Night) <span class="text-danger">*</span></label>
+                                <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                                    <span class="input-group-text bg-dark text-white border-0">$</span>
+                                    <input type="number" class="form-control border-0 bg-light py-3" 
+                                        id="basePrice" name="basePrice" 
+                                        placeholder="0.00" step="0.01" min="0.01" required>
+                                </div>
+                                <small class="text-muted mt-1 d-block">Starting price before additional services.</small>
+                            </div>
 
-                        <!-- Footer Buttons -->
-                        <div class="modal-footer" style="background:#f1f3f6; border-bottom-left-radius:18px; border-bottom-right-radius:18px;">
-                            <button type="button" class="btn btn-light px-4" style="border-radius:10px; border:1px solid #d0d0d0;" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-success px-4" style="border-radius:10px;">Save Room</button>
-                        </div>
+                            <!-- Room Size -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Room Size <span class="text-danger">*</span></label>
+                                <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                                    <span class="input-group-text bg-light border-0"><i class="bi bi-arrows-fullscreen text-muted"></i></span>
+                                    <input type="text" class="form-control border-0 bg-light py-3" 
+                                        id="addRoomSize" name="room_size" 
+                                        placeholder="e.g. 350 sq ft" maxlength="100" required>
+                                </div>
+                            </div>
 
+                            <!-- Beds -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Total Beds <span class="text-danger">*</span></label>
+                                <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                                    <span class="input-group-text bg-light border-0"><i class="bi bi-door-open-fill text-muted"></i></span>
+                                    <input type="text" class="form-control border-0 bg-light py-3" 
+                                        id="beds" name="beds" 
+                                        placeholder="e.g. 1 King, 1 Queen" required>
+                                </div>
+                            </div>
+
+                            <!-- Max Persons -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Max Guests <span class="text-danger">*</span></label>
+                                <div class="input-group shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                                    <span class="input-group-text bg-light border-0"><i class="bi bi-people-fill text-muted"></i></span>
+                                    <input type="number" class="form-control border-0 bg-light py-3" 
+                                        id="maxPerson" name="max_person" 
+                                        placeholder="e.g. 2" required>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-md-12 mb-0">
+                                <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Category Description</label>
+                                <textarea class="form-control border-0 bg-light p-3" 
+                                    style="border-radius: 12px; font-size: 0.95rem;"
+                                    id="description" name="description" 
+                                    rows="4" 
+                                    placeholder="Provide a compelling description of what makes this room category special..."></textarea>
+                                <small class="text-muted mt-1 d-block">Max 500 characters. Visible to guests during booking.</small>
+                            </div>
+                        </div>
                     </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer p-4" style="background: #f8f9fa; border: none;">
+                    <button type="button" class="btn btn-link text-decoration-none text-muted fw-bold px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="addRoomForm" 
+                        class="btn btn-success px-5 py-2 fw-bold" 
+                        style="border-radius: 12px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border: none; box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);">
+                        Create Category
+                    </button>
                 </div>
             </div>
         </div>
@@ -292,33 +316,64 @@
 
                             <!-- edit modal -->
                             <div class="modal fade" id="EditRoom${room.id}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content" style="border-radius:18px;">
-                                        <div class="modal-header text-white" style="background-color:darkgray;">
-                                            <h5 class="modal-title fw-bold">🛏️ Edit Room Type</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 15px 50px rgba(0,0,0,0.2); overflow: hidden;">
+                                        <div class="modal-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 25px;">
+                                            <h5 class="modal-title fw-bold">
+                                                <i class="bi bi-pencil-square me-2"></i> Edit Room Category
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <div class="modal-body p-4">
+                                        <div class="modal-body p-5">
                                             <form id="editRoomForm${room.id}" class="editRoomForm" action="${editRoute}" method="POST">
                                                 @csrf
                                                 @method('PUT')
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Room Name</label>
-                                                    <input type="text" class="form-control" name="roomName" value="${room.name}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Base Price</label>
-                                                    <input type="number" class="form-control" name="basePrice" value="${room.base_price}" step="0.01" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Description</label>
-                                                    <textarea class="form-control" name="description" rows="3">${room.description || ''}</textarea>
+                                                <div class="row">
+                                                    <div class="col-md-12 mb-4">
+                                                        <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Room Category Name</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-light border-0"><i class="bi bi-tag-fill text-muted"></i></span>
+                                                            <input type="text" class="form-control border-0 bg-light py-3" name="roomName" value="${room.name}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-4">
+                                                        <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Base Price</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-dark text-white border-0">$</span>
+                                                            <input type="number" class="form-control border-0 bg-light py-3" name="basePrice" value="${room.base_price}" step="0.01" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-4">
+                                                        <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Room Size</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-light border-0"><i class="bi bi-arrows-fullscreen text-muted"></i></span>
+                                                            <input type="text" class="form-control border-0 bg-light py-3" name="room_size" value="${room.room_size}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-4">
+                                                        <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Beds</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-light border-0"><i class="bi bi-door-open-fill text-muted"></i></span>
+                                                            <input type="text" class="form-control border-0 bg-light py-3" name="beds" value="${room.beds}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-4">
+                                                        <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Max Persons</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-light border-0"><i class="bi bi-people-fill text-muted"></i></span>
+                                                            <input type="number" class="form-control border-0 bg-light py-3" name="max_person" value="${room.max_persons}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label fw-bold text-dark small text-uppercase tracking-wider">Description</label>
+                                                        <textarea class="form-control border-0 bg-light p-3" name="description" rows="4">${room.description || ''}</textarea>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" form="editRoomForm${room.id}" class="btn btn-success">Update Room</button>
+                                        <div class="modal-footer p-4" style="background: #f8f9fa; border: none;">
+                                            <button type="button" class="btn btn-link text-decoration-none text-muted fw-bold" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" form="editRoomForm${room.id}" class="btn btn-primary px-5 py-2 fw-bold" style="border-radius: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">Update Category</button>
                                         </div>
                                     </div>
                                 </div>

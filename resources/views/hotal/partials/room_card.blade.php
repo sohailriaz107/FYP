@@ -1,7 +1,8 @@
 <div class="col-sm col-md-6 col-lg-4 ftco-animate fadeInUp ftco-animated">
     <div class="room">
-        <a href="{{ route('room-single', ['id' => $room->id]) }}" class="img d-flex justify-content-center align-items-center"
-            style="background-image: url('{{ asset('assets/images/room-1.jpg') }}');">
+        <a href="{{ route('room-single', ['id' => $room->id]) }}" 
+        class="img d-flex justify-content-center align-items-center"
+            style="background-image: url('{{ $room->images->count() > 0 ? asset('storage/' . $room->images->first()->image_path) : asset('assets/images/room-1.jpg') }}');">
             <div class="icon d-flex justify-content-center align-items-center">
                 <span class="icon-search2"></span>
             </div>

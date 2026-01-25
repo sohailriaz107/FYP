@@ -11,7 +11,7 @@ class HotalController extends Controller
 {
     public function index()
     {
-        $rooms = Rooms::with('roomType')->get();
+        $rooms = Rooms::with(['roomType', 'images'])->get();
         $room_type=RoomsTypes::all();
         $testimonials = \App\Models\Review::with('user')->latest()->limit(6)->get();
         if(Auth::user()->role=='user'){
@@ -24,7 +24,7 @@ return view('hotal.index',compact('rooms','room_type', 'testimonials'));
 
     public function room()
     {
-        $rooms = Rooms::with('roomType')->get();
+        $rooms = Rooms::with(['roomType', 'images'])->get();
         $room_types = RoomsTypes::all();
         return view('hotal.rooms', compact('rooms', 'room_types'));
     }
@@ -174,6 +174,7 @@ return view('hotal.index',compact('rooms','room_type', 'testimonials'));
 
         // Find available rooms of the selected type
         $availableRooms = Rooms::where('room_type_id', $roomTypeId)
+            ->with(['roomType', 'images'])
             ->whereDoesntHave('bookings', function ($query) use ($checkIn, $checkOut) {
                 $query->where(function ($q) use ($checkIn, $checkOut) {
                     $q->where('Check_in', '<', $checkOut)
