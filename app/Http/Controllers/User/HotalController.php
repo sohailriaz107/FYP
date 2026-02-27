@@ -68,7 +68,8 @@ return view('hotal.index',compact('rooms','room_type', 'testimonials'));
     }
     public function Contact()
     {
-        return view('hotal.contact');
+        $admin = \App\Models\User::where('role', 'admin')->first();
+        return view('hotal.contact', compact('admin'));
     }
     public function Profile()
     {

@@ -109,30 +109,54 @@
 		</div>
 	</div>
 </section>
-
+<!-- this section is for about us -->
 
 <section class="ftco-section ftc-no-pb ftc-no-pt">
 	<div class="container">
-		<div class="row">
-			
+		<div class="row align-items-center">
+			<div class="col-md-5 p-md-5 img img-2 img-3 d-flex justify-content-center align-items-center" style="background-image: url('{{ asset('assets/images/about.jpg') }}'); min-height: 500px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+			</div>
 			<div class="col-md-7 py-5 wrap-about pb-md-5 ftco-animate">
 				<div class="heading-section heading-section-wo-line pt-md-5 pl-md-5 mb-5">
 					<div class="ml-md-0">
-					       
-						<h2 class="mb-4">Welcome To StayEase Hotel</h2>
+						<span class="subheading" style="color: #f85959; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">About Us</span>
+						<h2 class="mb-4" style="font-weight: 700; color: #232323;">Welcome To StayEase Hotel</h2>
 					</div>
 				</div>
-				<div class="pb-md-5">
-					<p style="color:black;font-weight:400px">StayEase Hotel Management System is a modern, web-based application developed as a Final Year Project with the aim of automating and improving hotel operations. The system is designed to provide an efficient, reliable, and user-friendly platform for managing hotel activities such as room reservations, guest information, billing, and administrative tasks. It helps reduce manual work, minimize errors, and enhance the overall experience for both hotel staff and customers.</p>
-					<p style="color:black;font-weight:400px">The primary objective of this system is to simplify the hotel booking process while ensuring accurate and secure management of hotel data. Guests can easily view available rooms, check room details, and make reservations through an intuitive interface. The system displays real-time room availability, allowing customers to make informed booking decisions without delays or confusion.</p>
+				<div class="pb-md-5 pl-md-5">
+					<p style="color: #666; font-size: 16px; line-height: 1.8; margin-bottom: 25px;">StayEase Hotel Management System is a modern, web-based application developed to automate and improve hotel operations. We provide an efficient, reliable, and user-friendly platform for managing all your hotel activities seamlessly.</p>
 					
+					<ul class="list-unstyled d-flex flex-wrap mt-4" style="gap: 20px;">
+						<li class="d-flex align-items-center mb-3 w-100" style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+							<div class="icon d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: #f85959; color: white; border-radius: 50%; margin-right: 20px;">
+								<span class="ion-ios-bed" style="font-size: 24px;"></span>
+							</div>
+							<div class="text">
+								<h5 style="margin-bottom: 5px; font-weight: 600;">Luxury Rooms</h5>
+								<p style="margin: 0; color: #777; font-size: 14px;">Experience top-tier comfort and aesthetics.</p>
+							</div>
+						</li>
+						<li class="d-flex align-items-center mb-3 w-100" style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+							<div class="icon d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: #f85959; color: white; border-radius: 50%; margin-right: 20px;">
+								<span class="ion-ios-checkmark-circle-outline" style="font-size: 24px;"></span>
+							</div>
+							<div class="text">
+								<h5 style="margin-bottom: 5px; font-weight: 600;">Easy Booking</h5>
+								<p style="margin: 0; color: #777; font-size: 14px;">Seamless reservation process with real-time updates.</p>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="mt-5">
+						<a href="#" class="btn btn-primary py-3 px-4" style="border-radius: 30px; font-weight: 600; padding: 15px 30px !important;">Discover More</a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
 
-
+<!-- end about us -->
 
 <section class="ftco-section bg-light">
 	<div class="container">
