@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Mail\BookingConfirmationMail;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -101,7 +103,7 @@ class BookingController extends Controller
 
         $totalPrice = $nights * $request->base_price;
 
-        Booking::create([
+        $booking = Booking::create([
             'Guest'       => Auth::user()->name,
             'RoomType'    => $request->room_type,
             'RoomNo'      => $request->room_no,
@@ -111,6 +113,12 @@ class BookingController extends Controller
             'total_price' => $totalPrice,
             'status'      => 'pending'
         ]);
+
+        try {
+            Mail::to(Auth::user()->email)->send(new BookingConfirmationMail($booking));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Mail sending failed: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
