@@ -34,11 +34,10 @@ Route::middleware('authcheck')->group(function () {
 
     Route::post('/contact/send', [MessageController::class, 'store'])->name('contact.send');
     Route::post('/ai-recommend-room', [\App\Http\Controllers\AIRecommendationController::class, 'recommend'])->name('ai.recommend');
+
+    // Booking
+    Route::post('/booking', [BookingController::class, 'post'])->name('Booking.post');
 });
-
-
-
-
 
 Route::middleware(['authcheck', 'admincheck'])->group(function () {
 
@@ -78,7 +77,6 @@ Route::post('/amenities/toggle-status', [AmenitiesController::class, 'toggleStat
     // Booking
 
     Route::get('/booking', [BookingController::class, 'Index'])->name('Booking.index');
-    Route::post('/booking/post', [BookingController::class, 'post'])->name('Booking.post');
     Route::put('/booking/status/{id}', [BookingController::class, 'UpdateStatus'])->name('Booking.status');
     Route::delete('/booking/delete/{id}', [BookingController::class, 'Destroy'])->name('Booking.destroy');
 

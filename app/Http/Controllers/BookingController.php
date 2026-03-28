@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -44,61 +47,74 @@ class BookingController extends Controller
 
     public function post(Request $request)
     {
-        $request->validate([
-            'check_in' => 'required|date|after_or_equal:today',
-            'check_out' => 'required|date|after:check_in',
-            'guests' => 'required',
-            'room_type' => 'required',
-            'room_no' => 'required',
-            'base_price' => 'required',
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please login first'
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'check_in'   => 'required|date|after_or_equal:today',
+            'check_out'  => 'required|date|after:check_in',
+            'guests'     => 'required',
+            'room_type'  => 'required',
+            'room_no'    => 'required',
+            'base_price' => 'required|numeric|min:0',
         ]);
 
-        $checkIn = \Carbon\Carbon::parse($request->check_in);
-        $checkOut = \Carbon\Carbon::parse($request->check_out);
-        $nights = $checkIn->diffInDays($checkOut);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first(),
+                'errors'  => $validator->errors()
+            ], 422);
+        }
 
-        if ($nights == 0) {
-            $nights = 1;
+        $checkIn  = Carbon::parse($request->check_in);
+        $checkOut = Carbon::parse($request->check_out);
+        $nights   = $checkIn->diffInDays($checkOut);
+
+        if ($nights < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Check-out date must be at least 1 night after check-in.'
+            ], 422);
+        }
+
+        // Check if this room is already booked for the specified dates (pending or confirmed)
+        $alreadyBooked = Booking::where('RoomNo', $request->room_no)
+            ->whereIn('status', ['pending', 'booked'])
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                // Determine Date overlapping logic
+                $query->where('Check_in', '<', $checkOut)
+                      ->where('Check_out', '>', $checkIn);
+            })
+            ->exists();
+
+        if ($alreadyBooked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This room is already booked for the selected dates. Please choose different dates or another room.'
+            ], 422);
         }
 
         $totalPrice = $nights * $request->base_price;
 
-        // Backend availability check
-        $room = \App\Models\Rooms::where('room_number', $request->room_no)->first();
-        
-        // Check if room is available in rooms table
-        $isAvailableInTable = $room && $room->status === 'available';
-        
-        // Check for existing active bookings
-        $hasExistingBooking = \App\Models\Booking::where('RoomNo', $request->room_no)
-            ->whereIn('status', ['pending', 'booked'])
-            ->exists();
-
-        if (!$isAvailableInTable || $hasExistingBooking) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sorry, this room is no longer available for booking.',
-            ], 422);
-        }
-
-        \App\Models\Booking::create([
-            'Guest' => \Illuminate\Support\Facades\Auth::user()->name,
-            'RoomType' => $request->room_type,
-            'RoomNo' => $request->room_no,
-            'Check_in' => $request->check_in,
-            'Check_out' => $request->check_out,
-            'night' => $nights,
+        Booking::create([
+            'Guest'       => Auth::user()->name,
+            'RoomType'    => $request->room_type,
+            'RoomNo'      => $request->room_no,
+            'Check_in'    => $request->check_in,
+            'Check_out'   => $request->check_out,
+            'night'       => $nights,
             'total_price' => $totalPrice,
-            'status' => 'pending',
+            'status'      => 'pending'
         ]);
 
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Your booking has been submitted successfully!',
-            ]);
-        }
-
-        // return redirect()->back()->with('success', 'Your booking has been submitted successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking successful! Your booking is pending confirmation.'
+        ]);
     }
 }

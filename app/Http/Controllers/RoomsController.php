@@ -137,6 +137,22 @@ class RoomsController extends Controller
             $room->amenities()->detach();
         }
 
+        // Handle deleted images
+        if ($request->has('deleted_images')) {
+            foreach(array_filter($request->deleted_images) as $imageId) {
+                // Find image in this specific room to prevent unauthorized deletion
+                $image = $room->images()->find($imageId);
+                if ($image) {
+                    // Delete physical file
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($image->image_path)) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image_path);
+                    }
+                    // Delete DB record
+                    $image->delete();
+                }
+            }
+        }
+
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('room_images', 'public');

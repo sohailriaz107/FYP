@@ -2,8 +2,9 @@
 @section('title','Home')
 @section('content')
 
+<!-- home secrion -->
 <section class="home-slider owl-carousel">
-	<div class="slider-item" style="background-image: url('{{ asset('assets/images/bg_1.jpg') }}');">
+	<div class="slider-item" style="background-image: url('{{ asset('assets/hotal/grand.jpg') }}');">
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-center justify-content-center">
@@ -17,7 +18,7 @@
 		</div>
 	</div>
 
-	<div class="slider-item" style="background-image: url('{{ asset('assets/images/bg_2.jpg') }}');">
+	<div class="slider-item" style="background-image: url('{{ asset('assets/hotal/grand2.jpg') }}');">
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row no-gutters slider-text align-items-center justify-content-center">
@@ -114,7 +115,7 @@
 <section class="ftco-section ftc-no-pb ftc-no-pt">
 	<div class="container">
 		<div class="row align-items-center">
-			<div class="col-md-5 p-md-5 img img-2 img-3 d-flex justify-content-center align-items-center" style="background-image: url('{{ asset('assets/images/about.jpg') }}'); min-height: 500px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+			<div class="col-md-5 p-md-5 img img-2 img-3 d-flex justify-content-center align-items-center" style="background-image: url('{{ asset('assets/hotal/luxury.jpg') }}'); min-height: 500px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
 			</div>
 			<div class="col-md-7 py-5 wrap-about pb-md-5 ftco-animate">
 				<div class="heading-section heading-section-wo-line pt-md-5 pl-md-5 mb-5">

@@ -5,7 +5,7 @@
 
 
 
-<div class="hero-wrap" style="background-image: url('{{ asset('assets/images/bg_1.jpg') }}')">
+<div class="hero-wrap" style="background-image: url('{{ asset('assets/hotal/luxury.jpg') }}'); min-height: 500px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
     <div class="overlay"></div>
     <div class="container">
         <div class="row no-gutters slider-text d-flex align-itemd-end justify-content-center">

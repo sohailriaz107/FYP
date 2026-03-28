@@ -46,10 +46,9 @@ return view('hotal.index',compact('rooms','room_type', 'testimonials'));
             ->first();
         $bookingStatus = $booking ? $booking->status : null;
 
-        // Check if the room is already booked by ANYONE (pending or booked status)
-        $isRoomBooked = \App\Models\Booking::where('RoomNo', $room->room_number)
-            ->whereIn('status', ['pending', 'booked'])
-            ->exists();
+        // The booking form should be available to select dates to check availability
+        // We removed the block that completely disabled the form simply because a booking existed.
+        $isRoomBooked = false;
 
         // Fetch reviews for this room
         $reviews = \App\Models\Review::where('room_id', $id)->with('user')->latest()->get();

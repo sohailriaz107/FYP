@@ -4,7 +4,7 @@
 
 
 
-<div class="hero-wrap" style="background-image: url('{{ asset('assets/images/bg_1.jpg') }}')">
+<div class="hero-wrap" style="background-image: url('{{ asset('assets/hotal/luxury.jpg') }}'); min-height: 400px;">
 	<div class="overlay"></div>
 	<div class="container">
 		<div class="row no-gutters slider-text d-flex align-itemd-end justify-content-center">
@@ -171,12 +171,12 @@
 					<div style="max-width:350px; background:#ffffff; padding:25px; border-radius:12px;  font-family:Arial, sans-serif; border:1px solid black">
 
 						<h2 style="text-align:center; margin-bottom:20px;">
-							Book Now
+							Book Now 
 						</h2>
 
-						@if(session('success'))
+						@if(session('message'))
 							<div class="alert alert-success">
-								{{ session('success') }}
+								{{ session('message') }}
 							</div>
 						@endif
 
@@ -273,6 +273,7 @@
 
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     $('#bookingForm').on('submit', function(e) {
@@ -280,30 +281,74 @@ $(document).ready(function() {
         
         let $form = $(this);
         let $btn = $form.find('input[type="submit"]');
-        let $message = $('#booking-message');
         
-        $btn.val('Processing...').prop('disabled', true);
-        $message.hide().removeClass('alert alert-success alert-danger').empty();
+        // Basic frontend validation
+        let checkIn = $form.find('input[name="check_in"]').val();
+        let checkOut = $form.find('input[name="check_out"]').val();
+        let guests = $form.find('select[name="guests"]').val();
+
+        if(!checkIn || !checkOut || !guests) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please fill in all fields (Dates and Guests) before booking.'
+            });
+            return;
+        }
+
+        $btn.val('Processing...').prop('disabled', true).css('opacity', '0.7');
 
         $.ajax({
             url: $form.attr('action'),
             method: 'POST',
             data: $form.serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             success: function(response) {
-                $message.addClass('alert alert-success').text(response.message).fadeIn();
-                $form[0].reset();
-                $btn.val('Book Now').prop('disabled', false);
+                if(response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        confirmButtonColor: '#3498db'
+                    }).then((result) => {
+                        window.location.reload(); // Refresh to show pending status
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Booking Failed',
+                        text: response.message
+                    });
+                    $btn.val('Book Now').prop('disabled', false).css('opacity', '1');
+                }
             },
             error: function(xhr) {
                 let errorMsg = 'An error occurred. Please try again.';
+                
                 if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    errorMsg = Object.values(errors).flat().join('<br>');
+                    // Check if it's a validation error (Laravel default)
+                    if (xhr.responseJSON.errors) {
+                        let errors = xhr.responseJSON.errors;
+                        errorMsg = Object.values(errors).flat().join('<br>');
+                    } 
+                    // Or a manual error message
+                    else if (xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                } else if (xhr.status === 401) {
+                    errorMsg = 'Your session has expired. Please login again.';
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMsg = xhr.responseJSON.message;
                 }
-                $message.addClass('alert alert-danger').html(errorMsg).fadeIn();
-                $btn.val('Book Now').prop('disabled', false);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Booking Failed',
+                    html: errorMsg
+                });
+                $btn.val('Book Now').prop('disabled', false).css('opacity', '1');
             }
         });
     });
