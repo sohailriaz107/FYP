@@ -26,6 +26,15 @@ class BookingController extends Controller
         $booking->status = $request->status;
         $booking->save();
 
+        $user = \App\Models\User::where('name', $booking->Guest)->first();
+        if ($user && $user->email) {
+            try {
+                Mail::to($user->email)->send(new \App\Mail\MailBookRoom($booking));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Mail sending failed: ' . $e->getMessage());
+            }
+        }
+
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,

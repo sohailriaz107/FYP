@@ -41,10 +41,11 @@
                     <td style="padding: 15px 20px;">
                         <select class="form-select statusSelect" data-id="{{ $booking->id }}" 
                             style="padding: 5px; border-radius: 5px; border: 1px solid #ccc; 
-                            background-color: {{ $booking->status == 'booked' ? '#d1e7dd' : ($booking->status == 'cancelled' ? '#f8d7da' : '#fff3cd') }}">
+                            background-color: {{ $booking->status == 'booked' ? '#d1e7dd' : ($booking->status == 'cancelled' ? '#f8d7da' : ($booking->status == 'complete' ? '#cfe2ff' : '#fff3cd')) }}">
                             <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="booked" {{ $booking->status == 'booked' ? 'selected' : '' }}>Booked</option>
                             <option value="cancelled" {{ $booking->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="complete" {{ $booking->status == 'complete' ? 'selected' : '' }}>Complete</option>
                         </select>
                     </td>
                     <td style="padding: 15px 20px;">
@@ -84,6 +85,8 @@
                         $select.css('background-color', '#d1e7dd');
                     } else if (status === 'cancelled') {
                         $select.css('background-color', '#f8d7da');
+                    } else if (status === 'complete') {
+                        $select.css('background-color', '#cfe2ff');
                     } else {
                         $select.css('background-color', '#fff3cd');
                     }
