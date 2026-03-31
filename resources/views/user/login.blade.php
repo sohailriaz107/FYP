@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login</title>
+    <!-- Font Awesome for eye icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 
     <style>
         /* 1. Global Styles and Layout */
@@ -162,7 +165,32 @@
             color: white;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
+
+        /* Eye icon styling */
+        .password-container {
+            position: relative;
+        }
+
+        .password-container i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #8fa4b7;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+
+        .password-container i:hover {
+            color: var(--primary-color);
+        }
+
+        .password-container input {
+            padding-right: 45px !important;
+        }
     </style>
+
 </head>
 
 <body>
@@ -201,12 +229,16 @@
             <!-- Password Input -->
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Minimum 8 characters"
-                    required minlength="8">
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="Minimum 8 characters"
+                        required minlength="8">
+                    <i class="fas fa-eye" id="togglePassword"></i>
+                </div>
                 @error('password')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
+
 
             <!-- Registration Button -->
             <button
@@ -228,6 +260,21 @@
     </div>
 
 
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function() {
+            // toggle the type attribute
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+
+            // toggle the eye slash icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
 </body>
+
 
 </html>
