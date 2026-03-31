@@ -26,26 +26,50 @@
         /* Use a standard, clean system font */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-            background-color: var(--background-color);
+            background-image: url('{{ asset('images/hotel-bg.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
             margin: 0;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        /* 1a. Background Overlay for better contrast */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 26, 0.75); /* Darker overlay for depth */
+            z-index: 0;
+        }
+
 
         /* 2. Form Container (Card) */
         .registration-card {
             width: 100%;
             max-width: 450px;
-            background-color: var(--card-bg);
+            background-color: rgba(44, 56, 91, 0.85); /* Semi-transparent background */
+            backdrop-filter: blur(12px); /* Premium glassmorphism effect */
+            -webkit-backdrop-filter: blur(12px);
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
             /* Strong shadow for depth */
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
         }
+
 
         /* 3. Header Text */
         .header h2 {
