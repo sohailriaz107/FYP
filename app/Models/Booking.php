@@ -16,6 +16,7 @@ class Booking extends Model
         'night',
         'total_price',
         'status',
+        'email',
     ];
 
     public function room()

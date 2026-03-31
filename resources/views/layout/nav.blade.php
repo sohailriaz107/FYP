@@ -17,9 +17,7 @@
                     <a href="{{ route('room') }}" class="nav-link">Rooms</a>
                 </li>
 
-                <li class="nav-item {{ Request::is('resturent') ? 'active' : '' }}">
-                    <a href="{{ route('resturent') }}" class="nav-link">Restaurant</a>
-                </li>
+                
 
                 <li class="nav-item {{ Request::is('about') ? 'active' : '' }}">
                     <a href="{{ route('about') }}" class="nav-link">About</a>

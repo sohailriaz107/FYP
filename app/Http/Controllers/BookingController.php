@@ -26,10 +26,15 @@ class BookingController extends Controller
         $booking->status = $request->status;
         $booking->save();
 
-        $user = \App\Models\User::where('name', $booking->Guest)->first();
-        if ($user && $user->email) {
+        $recipientEmail = $booking->email;
+        if (!$recipientEmail) {
+            $user = \App\Models\User::where('name', $booking->Guest)->first();
+            $recipientEmail = $user ? $user->email : null;
+        }
+
+        if ($recipientEmail) {
             try {
-                Mail::to($user->email)->send(new \App\Mail\MailBookRoom($booking));
+                Mail::to($recipientEmail)->send(new \App\Mail\MailBookRoom($booking));
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Mail sending failed: ' . $e->getMessage());
             }
@@ -114,6 +119,7 @@ class BookingController extends Controller
 
         $booking = Booking::create([
             'Guest'       => Auth::user()->name,
+            'email'       => Auth::user()->email,
             'RoomType'    => $request->room_type,
             'RoomNo'      => $request->room_no,
             'Check_in'    => $request->check_in,
