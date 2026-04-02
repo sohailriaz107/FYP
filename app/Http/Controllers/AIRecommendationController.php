@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rooms;
+use App\Models\RoomsTypes;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client;
+use Gemini\Laravel\Facades\Gemini;
+use Illuminate\Support\Facades\Log;
+
 
 class AIRecommendationController extends Controller
 {
@@ -30,8 +33,8 @@ Budget: {$request->budget} PKR
 Preferred Room Type: " . ($request->room_type ? $request->room_type : 'Any') . "
 Additional Preferences: {$request->preferences}
 
-Based on the budget and preferences, recommend the best room type from the available list.
-Return ONLY valid JSON with:
+ Based on the budget and preferences, recommend the best room type from the available list.
+Return ONLY valid JSON and nothing else. No conversational text.
 {
   \"room_type\": \"(must match one of: {$roomTypesString})\",
   \"reasoning\": \"(brief explanation why this matches)\",
@@ -39,30 +42,31 @@ Return ONLY valid JSON with:
 }
 ";
 
-        $client = new Client();
-
         try {
-            $response = $client->post(
-                'https://api.openai.com/v1/chat/completions',
-                [
-                    'verify' => false,
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . config('services.openai.key'),
-                        'Content-Type' => 'application/json',
-                    ],
+            // Using Gemini to generate the recommendation
+            $response = Gemini::generativeModel('gemini-2.5-flash')->generateContent($prompt);
+            $responseText = $response->text();
+            
+            // Log the raw response for debugging
+            Log::info("AI Recommendation raw response: " . $responseText);
 
-                    'json' => [
-                        'model' => 'gpt-4o-mini',
-                        'messages' => [
-                            ['role' => 'user', 'content' => $prompt]
-                        ],
-                        'temperature' => 0.2
-                    ],
-                ]
-            );
+            // Use regex to extract JSON block from the response
+            if (preg_match('/\{.*\}/s', $responseText, $matches)) {
+                $responseText = $matches[0];
+            } else {
+                // If no JSON block found, the AI might be explaining why it can't recommend
+                Log::warning("AI did not return JSON. Raw response: " . $responseText);
+                throw new \Exception("The budget might be too low. Please try an amount above 1000 PKR.");
+            }
 
-            $aiResult = json_decode($response->getBody(), true);
-            $filters = json_decode($aiResult['choices'][0]['message']['content'], true);
+            $filters = json_decode(trim($responseText), true);
+
+            // Handle invalid JSON response
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($filters) || !isset($filters['room_type'])) {
+                Log::error("AI JSON Parse Error: " . json_last_error_msg() . " | Final extracted text: " . $responseText);
+                throw new \Exception("We couldn't find a perfect match. Please try adjusting your budget or preferences.");
+            }
+
 
             // Database filtering: Join rooms with room_types to check base_price
             $rooms = Rooms::whereHas('roomType', function($query) use ($filters, $request) {

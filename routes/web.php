@@ -10,7 +10,9 @@ use App\Http\Controllers\User\HotalController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ChatbotController;
 // Authentication
+
 
 Route::get('register', [AuthController::class, 'Register'])->name('user.register');
 Route::post('user/store', [AuthController::class, 'store'])->name('user.store');
@@ -34,8 +36,10 @@ Route::middleware('authcheck')->group(function () {
 
     Route::post('/contact/send', [MessageController::class, 'store'])->name('contact.send');
     Route::post('/ai-recommend-room', [\App\Http\Controllers\AIRecommendationController::class, 'recommend'])->name('ai.recommend');
+    Route::post('/chatbot/send', [ChatbotController::class, 'sendMessage'])->name('chatbot.send');
 
     // Booking
+
     Route::post('/booking', [BookingController::class, 'post'])->name('Booking.post');
 });
 

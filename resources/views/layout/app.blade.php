@@ -36,9 +36,11 @@
     @yield('content')
 
 
+    @include('layout.partials.chatbot')
     @include('layout.footer')
 
     {{-- JavaScript Files --}}
+
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery-migrate-3.0.1.min.js') }}"></script>
     <script src="{{ asset('assets/js/popper.min.js') }}"></script>
