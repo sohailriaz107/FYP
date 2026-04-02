@@ -8,8 +8,8 @@
             </div>
         </a>
         <div class="text p-3 text-center">
-            <h3 class="mb-3"><a href="{{ route('room-single', ['id' => $room->id]) }}">{{$room->RoomType->name}}</a></h3>
-            <h3><span class="price mr-2"></span>$ {{$room->RoomType->base_price}} <span class="per" style="color: black;">per night</span></h3>
+            <h3 class="mb-3"><a href="{{ route('room-single', ['id' => $room->id]) }}">{{$room->roomType->name}}</a></h3>
+            <h3><span class="price mr-2"></span>$ {{$room->roomType->base_price}} <span class="per" style="color: black;">per night</span></h3>
             <ul class="list">
                 @php
                     $statusColor = match(strtolower($room->status)) {

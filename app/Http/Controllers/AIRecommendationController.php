@@ -43,9 +43,21 @@ Return ONLY valid JSON and nothing else. No conversational text.
 ";
 
         try {
-            // Using Gemini to generate the recommendation
-            $response = Gemini::generativeModel('gemini-2.5-flash')->generateContent($prompt);
-            $responseText = $response->text();
+            $apiKey = config('gemini.api_key');
+            
+            // Using direct Http facade to avoid "UnserializableResponse" library issues
+            $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+                ->post("https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={$apiKey}", [
+                    'contents' => [['parts' => [['text' => $prompt]]]]
+                ]);
+
+            if (!$response->successful()) {
+                Log::error('AI Recommendation Gemini API Error: ' . $response->status() . ' | ' . $response->body());
+                throw new \Exception("AI Service is currently unavailable (Status " . $response->status() . ").");
+            }
+
+            $data = $response->json();
+            $responseText = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
             
             // Log the raw response for debugging
             Log::info("AI Recommendation raw response: " . $responseText);
@@ -102,9 +114,10 @@ Return ONLY valid JSON and nothing else. No conversational text.
             ]);
 
         } catch (\Exception $e) {
+            Log::error('AI Recommendation failed: ' . get_class($e) . ': ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             return response()->json([
                 'status' => 'error',
-                'message' => 'AI Recommendation failed: ' . $e->getMessage()
+                'message' => 'AI Recommendation failed (' . class_basename($e) . '): ' . $e->getMessage()
             ], 500);
         }
     }

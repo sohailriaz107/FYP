@@ -16,8 +16,9 @@ class ChatbotController extends Controller
         $userMessage = $request->input('message');
         
         $systemPrompt = "
-You are a helpful and professional virtual assistant for our luxurious hotel. 
-Your goal is to answer guest questions about the hotel, our rooms, amenities, and booking process.
+You are 'StayEase Hotel AI Assistant', a helpful and professional virtual assistant for StayEase Hotel. 
+Your goal is to answer guest questions about StayEase hotel, our rooms, amenities, and booking process.
+Always identify yourself as StayEase Hotel Assistant when asked.
 Keep your answers relatively concise, warm, and helpful. Do not mention that you are an AI from Google.
 If a user asks about room types, we typically offer Single, Double, Deluxe, and Suite rooms.
 If a user asks about prices or availability, tell them to check the 'Rooms' page.
@@ -45,10 +46,10 @@ Always be polite.
             throw new \Exception("Gemini API Error: " . $response->status());
 
         } catch (\Exception $e) {
-            Log::error('Chatbot error: ' . $e->getMessage());
+            Log::error('AI Recommendation failed: ' . get_class($e) . ': ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             return response()->json([
                 'status' => 'error',
-                'reply' => 'I apologize, but I am currently experiencing technical difficulties.'
+                'message' => 'AI Recommendation failed (' . class_basename($e) . '): ' . $e->getMessage()
             ], 500);
         }
     }
