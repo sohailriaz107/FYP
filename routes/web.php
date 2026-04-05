@@ -86,4 +86,8 @@ Route::post('/amenities/toggle-status', [AmenitiesController::class, 'toggleStat
 
     // Setting
     Route::get('admin/setting', [DashboardController::class, 'Setting'])->name('admin.setting');
+
+    // AI Message Reply
+    Route::post('admin/messages/generate-reply', [\App\Http\Controllers\AIMessageController::class, 'generateReply'])->name('admin.messages.generate-reply');
+    Route::post('admin/messages/send-reply', [\App\Http\Controllers\AIMessageController::class, 'sendReply'])->name('admin.messages.send-reply');
 });
