@@ -1,4 +1,13 @@
-<div class="col-sm col-md-6 col-lg-4 ftco-animate fadeInUp ftco-animated">
+@php
+    if ($homeGrid ?? false) {
+        $roomCardColClass = 'col-12 col-md-4 col-lg-4 ftco-animate fadeInUp ftco-animated';
+    } elseif ($roomsFourColumns ?? false) {
+        $roomCardColClass = 'col-12 col-sm-6 col-lg-3 ftco-animate fadeInUp ftco-animated';
+    } else {
+        $roomCardColClass = 'col-sm col-md-6 col-lg-4 ftco-animate fadeInUp ftco-animated';
+    }
+@endphp
+<div class="{{ $roomCardColClass }}">
     <div class="room">
         <a href="{{ route('room-single', ['id' => $room->id]) }}" 
         class="img d-flex justify-content-center align-items-center"

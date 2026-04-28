@@ -41,6 +41,7 @@ Route::middleware('authcheck')->group(function () {
     // Booking
 
     Route::post('/booking', [BookingController::class, 'post'])->name('Booking.post');
+    Route::get('/booking/invoice/{id}', [BookingController::class, 'downloadInvoice'])->name('booking.invoice');
 });
 
 Route::middleware(['authcheck', 'admincheck'])->group(function () {
@@ -83,6 +84,7 @@ Route::post('/amenities/toggle-status', [AmenitiesController::class, 'toggleStat
     Route::get('/booking', [BookingController::class, 'Index'])->name('Booking.index');
     Route::put('/booking/status/{id}', [BookingController::class, 'UpdateStatus'])->name('Booking.status');
     Route::delete('/booking/delete/{id}', [BookingController::class, 'Destroy'])->name('Booking.destroy');
+    Route::get('/admin/booking/invoice/{id}', [BookingController::class, 'downloadInvoice'])->name('admin.booking.invoice');
 
     // Setting
     Route::get('admin/setting', [DashboardController::class, 'Setting'])->name('admin.setting');

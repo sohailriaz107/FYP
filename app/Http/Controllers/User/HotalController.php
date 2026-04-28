@@ -11,11 +11,12 @@ class HotalController extends Controller
 {
     public function index()
     {
-        $rooms = Rooms::with(['roomType', 'images'])->get();
-        $room_type=RoomsTypes::all();
+        $totalRoomsCount = Rooms::count();
+        $rooms = Rooms::with(['roomType', 'images'])->orderBy('id')->limit(3)->get();
+        $room_type = RoomsTypes::all();
         $testimonials = \App\Models\Review::with('user')->latest()->limit(6)->get();
         if(Auth::user()->role=='user'){
-return view('hotal.index',compact('rooms','room_type', 'testimonials'));
+return view('hotal.index', compact('rooms', 'room_type', 'testimonials', 'totalRoomsCount'));
         }
          // Optional: redirect others (admin or guest) somewhere
     return redirect()->route('dashboard');
@@ -166,6 +167,7 @@ return view('hotal.index',compact('rooms','room_type', 'testimonials'));
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
             'room_type' => 'required|exists:room_types,id',
+            'limit' => 'nullable|integer|min:1|max:50',
         ]);
 
         $checkIn = $request->check_in;
@@ -183,10 +185,19 @@ return view('hotal.index',compact('rooms','room_type', 'testimonials'));
             })
             ->get();
 
+        $limit = $request->integer('limit');
+        if ($limit > 0) {
+            $availableRooms = $availableRooms->take($limit)->values();
+        }
+
         if ($availableRooms->isNotEmpty()) {
             $html = '';
             foreach ($availableRooms as $room) {
-                $html .= view('hotal.partials.room_card', compact('room'))->render();
+                $html .= view('hotal.partials.room_card', [
+                    'room' => $room,
+                    'homeGrid' => $limit > 0,
+                    'roomsFourColumns' => $request->filled('rooms_catalog'),
+                ])->render();
             }
 
             return response()->json([

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BookingController extends Controller
 {
@@ -139,5 +140,36 @@ class BookingController extends Controller
             'success' => true,
             'message' => 'Booking successful! Your booking is pending confirmation.'
         ]);
+    }
+
+    /**
+     * Download PDF Invoice for a booking.
+     * Accessible by: Admin (any booking) or User (own booking only)
+     */
+    public function downloadInvoice($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        // Security: non-admin users can only download their own booking invoice
+        if (Auth::user()->role !== 'admin') {
+            if ($booking->email !== Auth::user()->email) {
+                abort(403, 'Unauthorized access to this invoice.');
+            }
+        }
+
+        $admin = \App\Models\User::where('role', 'admin')->first();
+
+        $pdf = Pdf::loadView('pdf.booking_invoice', compact('booking', 'admin'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'dpi'                    => 150,
+                'defaultFont'            => 'DejaVu Sans',
+                'isHtml5ParserEnabled'   => true,
+                'isRemoteEnabled'        => false,
+            ]);
+
+        $filename = 'StayEase-Invoice-' . str_pad($booking->id, 6, '0', STR_PAD_LEFT) . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

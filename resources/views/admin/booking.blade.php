@@ -49,7 +49,14 @@
                         </select>
                     </td>
                     <td style="padding: 15px 20px;">
-                        <button class="btn btn-danger deleteBookingBtn" data-id="{{ $booking->id }}">Delete</button>
+                        <a href="{{ route('admin.booking.invoice', $booking->id) }}" 
+                           class="btn btn-success btn-sm" 
+                           target="_blank"
+                           title="Download PDF Invoice"
+                           style="margin-bottom:5px;">
+                            <i class="bi bi-file-earmark-pdf-fill"></i> Invoice
+                        </a>
+                        <button class="btn btn-danger btn-sm deleteBookingBtn" data-id="{{ $booking->id }}" style="margin-bottom:5px;">Delete</button>
                     </td>
                 </tr>
                 @endforeach

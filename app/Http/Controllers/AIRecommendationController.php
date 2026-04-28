@@ -102,7 +102,10 @@ Return ONLY valid JSON and nothing else. No conversational text.
 
             $html = '';
             foreach ($rooms as $room) {
-                $html .= view('hotal.partials.room_card', compact('room'))->render();
+                $html .= view('hotal.partials.room_card', [
+                    'room' => $room,
+                    'roomsFourColumns' => true,
+                ])->render();
             }
 
             return response()->json([
